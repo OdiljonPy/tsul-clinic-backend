@@ -6,15 +6,37 @@ from rest_framework.viewsets import ViewSet
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
 from repository.get_news import get_news
-from .models import News, Time, Statistics, CustomerOpinion, FAQ, AboutUs, Info, ServicesCategory, Services, \
-    AdditionalLinks, Banner
-from .serializers import PaginatorSerializer, NewsSerializer, TimeSerializer, StatisticsSerializer, \
-    CustomerOpinionSerializer, FAQSerializer, AboutUsSerializer, InfoSerializer, ServicesCategorySerializer, \
-    ServicesSerializer, AdditionalLinksSerializer, BannerSerializer
+from .models import (
+    News,
+    Time,
+    Statistics,
+    CustomerOpinion,
+    FAQ,
+    AboutUs,
+    Info,
+    ServicesCategory,
+    Services,
+    AdditionalLinks,
+    Banner)
+from .serializers import (
+    PaginatorSerializer,
+    NewsSerializer,
+    TimeSerializer,
+    StatisticsSerializer,
+    CustomerOpinionSerializer,
+    FAQSerializer,
+    AboutUsSerializer,
+    InfoSerializer,
+    ServicesCategorySerializer,
+    ServicesSerializer,
+    AdditionalLinksSerializer,
+    BannerSerializer
+)
 
 
 class NewsViewSet(ViewSet):
     @swagger_auto_schema(
+        operation_summary='News list',
         responses={200: NewsSerializer(many=True)},
         tags=['News'],
     )
@@ -29,6 +51,7 @@ class NewsViewSet(ViewSet):
         return Response({'response': response, 'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='News details',
         responses={200: NewsSerializer()},
         tags=['News'],
     )
@@ -42,6 +65,7 @@ class NewsViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='Popular news lists',
         responses={200: NewsSerializer(many=True)},
         tags=['News'],
     )
@@ -52,15 +76,20 @@ class NewsViewSet(ViewSet):
 
 
 class TimeViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        operation_summary='Time list',
+        responses={200: TimeSerializer(many=True)},
+        tags=['Time'],
+    )
     def list(self, request):
         times = Time.objects.all()
-        return Response({'response': TimeSerializer(times, context={'request': request}).data, 'ok': True},
+        return Response({'response': TimeSerializer(times, context={'request': request}, many=True).data, 'ok': True},
                         status=status.HTTP_200_OK)
 
 
 class BaseViewSet(ViewSet):
     @swagger_auto_schema(
+        operation_summary='Statistics',
         responses={200: StatisticsSerializer()},
         tags=['Base'],
     )
@@ -70,7 +99,8 @@ class BaseViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
-        responses={200: CustomerOpinionSerializer()},
+        operation_summary='Opinions lists',
+        responses={200: CustomerOpinionSerializer(many=True)},
         tags=['Base'],
     )
     def list_opinion(self, request):
@@ -79,6 +109,7 @@ class BaseViewSet(ViewSet):
                          'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='Frequently Asked Question list',
         responses={200: FAQSerializer(many=True)},
         tags=['Base'],
     )
@@ -88,6 +119,7 @@ class BaseViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='About Us',
         responses={200: AboutUsSerializer()},
         tags=['Base'],
     )
@@ -97,7 +129,8 @@ class BaseViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
-        responses={200: StatisticsSerializer()},
+        operation_summary='INFO',
+        responses={200: InfoSerializer()},
         tags=['Base'],
     )
     def get_info(self, request):
@@ -106,7 +139,9 @@ class BaseViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='Services Category list',
         responses={200: ServicesCategorySerializer(many=True)},
+        tags=['Base'],
     )
     def list_services_category(self, request):
         services_category = ServicesCategory.objects.all()
@@ -115,6 +150,7 @@ class BaseViewSet(ViewSet):
              'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='Services list',
         responses={200: ServicesSerializer(many=True)},
         tags=['Base'],
     )
@@ -124,6 +160,7 @@ class BaseViewSet(ViewSet):
                          'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='Services details',
         responses={200: ServicesSerializer()},
         tags=['Base'],
     )
@@ -135,6 +172,7 @@ class BaseViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='Additional links list',
         responses={200: AdditionalLinksSerializer(many=True)},
         tags=['Base'],
     )
@@ -144,6 +182,7 @@ class BaseViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_summary='Banner list',
         responses={200: BannerSerializer(many=True)},
         tags=['Base'],
     )
