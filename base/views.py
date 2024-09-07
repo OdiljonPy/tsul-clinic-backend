@@ -5,7 +5,7 @@ from rest_framework.viewsets import ViewSet
 
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
-from repository.get_news import get_news
+from .repository.get_news import get_news
 from .models import (
     News,
     Time,

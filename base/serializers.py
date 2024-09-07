@@ -212,8 +212,8 @@ class BannerSerializer(serializers.ModelSerializer):
 
 
 class PaginatorSerializer(serializers.Serializer):
-    page = serializers.IntegerField(required=True, default=1)
-    page_size = serializers.IntegerField(required=True, default=10)
+    page = serializers.IntegerField(required=False,default=1)
+    page_size = serializers.IntegerField(required=False,default=10)
 
     def validate(self, attrs):
         page = attrs.get('page')
