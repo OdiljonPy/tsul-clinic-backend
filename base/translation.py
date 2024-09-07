@@ -2,7 +2,7 @@ from modeltranslation.translator import translator, TranslationOptions
 from .models import (
     Banner,
     News,
-    Time,
+    Team,
     CustomerOpinion,
     FAQ,
     AboutUs,
@@ -20,7 +20,7 @@ class NewsTranslationOptions(TranslationOptions):
     fields = ('title', 'short_description', 'content',)
 
 
-class TimeTranslationOptions(TranslationOptions):
+class TeamTranslationOptions(TranslationOptions):
     fields = ('full_name', 'position')
 
 
@@ -54,7 +54,7 @@ class AdditionalLinksTranslationOptions(TranslationOptions):
 
 translator.register(Banner, BaseTranslationOptions)
 translator.register(News, NewsTranslationOptions)
-translator.register(Time, TimeTranslationOptions)
+translator.register(Team, TeamTranslationOptions)
 translator.register(CustomerOpinion, CustomerOpinionTranslationOptions)
 translator.register(FAQ, FAQTranslationOptions)
 translator.register(AboutUs, AboutUsTranslationOptions)

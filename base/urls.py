@@ -1,12 +1,12 @@
 from django.urls import path
 
-from .views import NewsViewSet, TimeViewSet, BaseViewSet
+from .views import NewsViewSet, TeamViewSet, BaseViewSet
 
 urlpatterns = [
     path('news/', NewsViewSet.as_view({'get': 'list'}), name='news'),
     path('news/<int:pk>/', NewsViewSet.as_view({'get': 'retrieve'}), name='news_detail'),
     path('news/popular/', NewsViewSet.as_view({'get': 'popular_news'}), name='popular_news'),
-    path('time/', TimeViewSet.as_view({'get': 'list'}), name='time'),
+    path('team/', TeamViewSet.as_view({'get': 'list'}), name='time'),
     path('statistics/', BaseViewSet.as_view({'get': 'get_statistics'}), name='statistics'),
     path('opinion/', BaseViewSet.as_view({'get': 'list_opinion'}), name='opinion'),
     path('faq/', BaseViewSet.as_view({'get': 'list_faq'}), name='faq'),

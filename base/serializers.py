@@ -5,7 +5,7 @@ from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
 from .models import (
     News,
-    Time,
+    Team,
     Statistics,
     CustomerOpinion,
     FAQ,
@@ -36,7 +36,7 @@ class NewsSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'short_description', 'image', 'content', 'created_at')
 
 
-class TimeSerializer(serializers.ModelSerializer):
+class TeamSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         request = self.context.get('request')
@@ -48,7 +48,7 @@ class TimeSerializer(serializers.ModelSerializer):
         self.fields['position'] = serializers.CharField(source=f'position_{language}')
 
     class Meta:
-        model = Time
+        model = Team
         fields = ('id', 'full_name', 'position', 'image')
 
 
