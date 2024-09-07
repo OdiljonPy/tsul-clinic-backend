@@ -8,7 +8,7 @@ from exceptions.exception import CustomApiException
 from .repository.get_news import get_news
 from .models import (
     News,
-    Time,
+    Team,
     Statistics,
     CustomerOpinion,
     FAQ,
@@ -21,7 +21,7 @@ from .models import (
 from .serializers import (
     PaginatorSerializer,
     NewsSerializer,
-    TimeSerializer,
+    TeamSerializer,
     StatisticsSerializer,
     CustomerOpinionSerializer,
     FAQSerializer,
@@ -75,15 +75,15 @@ class NewsViewSet(ViewSet):
                         status=status.HTTP_200_OK)
 
 
-class TimeViewSet(ViewSet):
+class TeamViewSet(ViewSet):
     @swagger_auto_schema(
-        operation_summary='Time list',
-        responses={200: TimeSerializer(many=True)},
-        tags=['Time'],
+        operation_summary='Team list',
+        responses={200: TeamSerializer(many=True)},
+        tags=['Team'],
     )
     def list(self, request):
-        times = Time.objects.all()
-        return Response({'response': TimeSerializer(times, context={'request': request}, many=True).data, 'ok': True},
+        teams = Team.objects.all()
+        return Response({'response': TeamSerializer(teams, context={'request': request}, many=True).data, 'ok': True},
                         status=status.HTTP_200_OK)
 
 

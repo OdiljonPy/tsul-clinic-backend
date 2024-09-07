@@ -34,7 +34,7 @@ class News(base_models.BaseModel):
         ordering = ('created_at',)
 
 
-class Time(base_models.BaseModel):
+class Team(base_models.BaseModel):
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
     position = models.CharField(max_length=50, verbose_name="Позиция")
     image = models.ImageField(upload_to='time/', verbose_name="Изображение")
@@ -43,8 +43,8 @@ class Time(base_models.BaseModel):
         return self.full_name
 
     class Meta:
-        verbose_name = "Время"
-        verbose_name_plural = "Время"
+        verbose_name = "Команда"
+        verbose_name_plural = "Команды"
         ordering = ('created_at',)
 
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Banner, News, Time, Statistics, CustomerOpinion,
+    Banner, News, Team, Statistics, CustomerOpinion,
     FAQ, AboutUs, Info, OfficeAddress, ServicesCategory,
     Services, AdditionalLinks
 )
@@ -21,8 +21,8 @@ class NewsAdmin(admin.ModelAdmin):
     list_filter = ('views_count', 'is_published')
 
 
-@admin.register(Time)
-class TimeAdmin(admin.ModelAdmin):
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_name', 'position')
     list_display_links = ('id', 'full_name')
     search_fields = ('id', 'full_name', 'position')
