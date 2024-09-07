@@ -73,19 +73,17 @@ class InfoAdmin(admin.ModelAdmin):
     inlines = (OfficeAddressAdmin,)
 
 
+class ServicesAdmin(admin.TabularInline):
+    model = Services
+    extra = 1
+
+
 @admin.register(ServicesCategory)
 class ServicesCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_display_links = ('id', 'name')
     search_fields = ('id', 'name')
-
-
-@admin.register(Services)
-class ServicesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'category', 'name')
-    list_display_links = ('id', 'category', 'name')
-    search_fields = ('id', 'category', 'name')
-    list_filter = ('category',)
+    inlines = (ServicesAdmin,)
 
 
 @admin.register(AdditionalLinks)
