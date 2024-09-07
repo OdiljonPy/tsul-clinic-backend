@@ -61,7 +61,7 @@ class AboutUsAdmin(admin.ModelAdmin):
 
 class OfficeAddressAdmin(admin.TabularInline):
     model = OfficeAddress
-    fields = ('id', 'name')
+    fields = ('id', 'address_name')
     extra = 1
 
 
