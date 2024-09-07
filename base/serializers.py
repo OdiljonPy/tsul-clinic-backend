@@ -1,9 +1,22 @@
+from django.conf import settings
 from rest_framework import serializers
-from .models import News, Time, Statistics, CustomerOpinion, FAQ, AboutUs, Info, OfficeAddress, ServicesCategory, \
-    Services, AdditionalLinks, Banner
+
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
-from django.conf import settings
+from .models import (
+    News,
+    Time,
+    Statistics,
+    CustomerOpinion,
+    FAQ,
+    AboutUs,
+    Info,
+    OfficeAddress,
+    ServicesCategory,
+    Services,
+    AdditionalLinks,
+    Banner
+)
 
 
 class NewsSerializer(serializers.ModelSerializer):
@@ -199,8 +212,8 @@ class BannerSerializer(serializers.ModelSerializer):
 
 
 class PaginatorSerializer(serializers.Serializer):
-    page = serializers.IntegerField(required=True, default=1)
-    page_size = serializers.IntegerField(required=True, default=10)
+    page = serializers.IntegerField(required=False,default=1)
+    page_size = serializers.IntegerField(required=False,default=10)
 
     def validate(self, attrs):
         page = attrs.get('page')

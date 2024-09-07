@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts
+
+from .models import (
+    DocumentCategory,
+    DocumentType,
+    DocumentOrder,
+    MeetingOrder,
+    Contacts
+)
 
 
 class DocumentCategorySerializer(serializers.ModelSerializer):

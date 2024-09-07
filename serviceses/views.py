@@ -5,13 +5,19 @@ from rest_framework.viewsets import ViewSet
 
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
-from .models import DocumentCategory
-from .serializers import DocumentCategorySerializer, DocumentTypeSerializer, DocumentOrderSerializer, \
-    MeetingOrderSerializer, ContactsSerializer
+from .models import DocumentCategory, DocumentOrder
+from .serializers import (
+    DocumentCategorySerializer,
+    DocumentTypeSerializer,
+    DocumentOrderSerializer,
+    MeetingOrderSerializer,
+    ContactsSerializer
+)
 
 
 class DocumentCategoryViewSet(ViewSet):
     @swagger_auto_schema(
+        operation_summary='Get Document Categories',
         responses={200: DocumentCategorySerializer(many=True)},
         tags=['DocumentCategory'],
     )
@@ -34,7 +40,17 @@ class DocumentOrderViewSet(ViewSet):
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'response': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
+
+    @swagger_auto_schema(
+        operation_summary='Check order for documents',
+        responses={200: DocumentOrderSerializer()},
+        tags=['DocumentOrder'],
+    )
+    def check_document(self, request, document_id):
+        document = DocumentOrder.objects.filter(order_number=document_id).filter()
+        return Response({'response': DocumentOrderSerializer(document, context={'request': request}).data, 'ok': True},
+                        status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Create order for meeting',
@@ -47,11 +63,12 @@ class DocumentOrderViewSet(ViewSet):
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'response': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
 
 class ContactsViewSet(ViewSet):
     @swagger_auto_schema(
+        operation_summary='Create contact',
         request_body=ContactsSerializer,
         responses={201: ContactsSerializer()},
         tags=['Contacts'],
@@ -61,4 +78,4 @@ class ContactsViewSet(ViewSet):
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'response': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
