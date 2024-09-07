@@ -1,0 +1,40 @@
+from rest_framework import serializers
+from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts
+
+
+class DocumentCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentCategory
+        fields = ('id', 'category_name')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['document_type'] = DocumentTypeSerializer(instance.documenttype.all(), many=True,
+                                                       context=self.context).data
+        return data
+
+
+class DocumentTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentType
+        fields = ('id', 'document_name', 'document_category', 'price')
+
+
+class DocumentOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentOrder
+        fields = ('id', 'order_number', 'document_category', 'document_type', 'customer_full_name', 'customer_phone',
+                  'customer_email', 'customer_message', 'status', 'created_at')
+
+
+class MeetingOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeetingOrder
+        fields = ('id', 'order_number', 'customer_full_name', 'customer_phone', 'customer_email', 'meeting_price',
+                  'meeting_status', 'meeting_type', 'meeting_time')
+
+
+class ContactsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contacts
+        fields = ('id', 'full_name', 'email', 'phone', 'message', 'type')
