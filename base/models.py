@@ -18,8 +18,8 @@ class Banner(base_models.BaseModel):
 
 
 class News(base_models.BaseModel):
-    title = models.CharField(max_length=100, verbose_name="Заголовок")
-    short_description = models.CharField(max_length=150, verbose_name="Краткое описание")
+    title = models.CharField(max_length=150, verbose_name="Заголовок")
+    short_description = models.CharField(max_length=255, verbose_name="Краткое описание")
     image = models.ImageField(upload_to='news/', verbose_name="Изображение")
     content = RichTextField(verbose_name="Содержание")
     views_count = models.IntegerField(default=0, verbose_name="Количество просмотров")
@@ -36,7 +36,7 @@ class News(base_models.BaseModel):
 
 class Team(base_models.BaseModel):
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
-    position = models.CharField(max_length=50, verbose_name="Позиция")
+    position = models.CharField(max_length=255, verbose_name="Позиция")
     image = models.ImageField(upload_to='time/', verbose_name="Изображение")
 
     def __str__(self):
@@ -64,9 +64,9 @@ class Statistics(base_models.BaseModel):
 
 class CustomerOpinion(base_models.BaseModel):
     company_name = models.CharField(max_length=100, verbose_name="Название компании")
-    position = models.CharField(max_length=50, verbose_name="Позиция")
+    position = models.CharField(max_length=150, verbose_name="Позиция")
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
-    opinion = models.CharField(max_length=150, verbose_name="Мнение")
+    opinion = models.TextField(max_length=800, verbose_name="Мнение")
     image = models.ImageField(null=True, blank=True, upload_to='customer_opinion/')
 
     def __str__(self):
@@ -79,8 +79,8 @@ class CustomerOpinion(base_models.BaseModel):
 
 
 class FAQ(base_models.BaseModel):
-    question = models.CharField(max_length=150, verbose_name="Вопрос")
-    answer = models.CharField(max_length=1000, verbose_name="Ответ")
+    question = models.TextField(max_length=500, verbose_name="Вопрос")
+    answer = models.TextField(max_length=1000, verbose_name="Ответ")
     is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
 
     def __str__(self):
