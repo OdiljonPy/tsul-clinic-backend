@@ -67,6 +67,7 @@ class CustomerOpinion(base_models.BaseModel):
     position = models.CharField(max_length=50, verbose_name="Позиция")
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
     opinion = models.CharField(max_length=150, verbose_name="Мнение")
+    image = models.ImageField(null=True, blank=True, upload_to='customer_opinion/')
 
     def __str__(self):
         return self.company_name
