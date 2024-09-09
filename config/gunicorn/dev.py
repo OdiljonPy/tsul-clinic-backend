@@ -1,9 +1,9 @@
-project_name = 'haq-backend'
+project_name = 'tsul-clinic-backend'
 
 wsgi_app = "config.wsgi:application"
 loglevel = 'debug'
 workers = 1
-bind = '0.0.0.0:8002'
+bind = '0.0.0.0:8006'
 reload = False
 accesslog = errorlog = f'/var/log/gunicorn/{project_name}-dev.log'
 capture_output = True
