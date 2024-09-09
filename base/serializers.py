@@ -218,6 +218,6 @@ class PaginatorSerializer(serializers.Serializer):
     def validate(self, attrs):
         page = attrs.get('page')
         page_size = attrs.get('page_size')
-        if page_size > 0 or page > 0:
+        if page_size < 0 or page < 0:
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message='Page or page size is invalid')
         return attrs
