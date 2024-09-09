@@ -1,4 +1,5 @@
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -37,6 +38,12 @@ from .serializers import (
 class NewsViewSet(ViewSet):
     @swagger_auto_schema(
         operation_summary='News list',
+        manual_parameters=[
+            openapi.Parameter(
+                name='page', in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER, description='Page'),
+            openapi.Parameter(
+                name='page_size', in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER, description='Page size'),
+        ],
         responses={200: NewsSerializer(many=True)},
         tags=['News'],
     )
