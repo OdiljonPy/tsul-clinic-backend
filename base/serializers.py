@@ -73,7 +73,7 @@ class CustomerOpinionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerOpinion
-        fields = ('id', 'company_name', 'position', 'full_name', 'opinion', 'created_at')
+        fields = ('id', 'company_name', 'position', 'full_name', 'opinion', 'created_at', 'image')
 
 
 class FAQSerializer(serializers.ModelSerializer):
