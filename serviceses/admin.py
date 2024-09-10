@@ -2,12 +2,18 @@ from django.contrib import admin
 from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts
 
 
+class DocumentTypeAdminTabularInline(admin.TabularInline):
+    model = DocumentType
+    extra = 1
+
+
 @admin.register(DocumentCategory)
 class DocumentCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'category_name', 'is_active')
     list_display_links = ('id', 'category_name')
     search_fields = ('id', 'category_name')
     list_filter = ('is_active',)
+    inlines = (DocumentTypeAdminTabularInline,)
 
 
 @admin.register(DocumentType)

@@ -21,7 +21,7 @@ class DocumentCategoryViewSet(ViewSet):
         tags=['DocumentCategory'],
     )
     def list(self, request):
-        categories = DocumentCategory.objects.filter(is_active=True)
+        categories = DocumentCategory.objects.filter(is_active=True, documenttype__isnull=False)
         return Response(
             {"response": DocumentCategorySerializer(categories, many=True, context={"request": request}).data,
              'ok': True},
