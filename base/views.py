@@ -50,7 +50,7 @@ class NewsViewSet(ViewSet):
     def list(self, request):
         serializer_params = PaginatorSerializer(data=request.query_params)
         if not serializer_params.is_valid():
-            raise CustomApiException(ErrorCodes.VALIDATION_FAILED)
+            raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer_params.errors)
         news = News.objects.filter(is_published=True)
         response = get_news(response=news, context={'request': request},
                             page_size=serializer_params.validated_data.get('page_size'),
