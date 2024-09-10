@@ -41,7 +41,7 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['ready_documents'] = ReadyDocumentsSerializer(instance.ready_documents.all(), many=True,
+        data['ready_documents'] = ReadyDocumentsSerializer(instance.readydocuments_set.all(), many=True,
                                                            context=self.context).data
         return data
 
