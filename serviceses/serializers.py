@@ -16,7 +16,7 @@ class DocumentCategorySerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['document_type'] = DocumentTypeSerializer(instance.documenttype.all(), many=True,
+        data['document_type'] = DocumentTypeSerializer(instance.documenttype_set.all(), many=True,
                                                        context=self.context).data
         return data
 
@@ -37,8 +37,7 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
 class MeetingOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingOrder
-        fields = ('id', 'order_number', 'customer_full_name', 'customer_phone', 'customer_email', 'meeting_price',
-                  'meeting_status', 'meeting_type', 'meeting_time')
+        fields = ('id', 'order_number', 'customer_full_name', 'customer_phone', 'customer_email')
 
 
 class ContactsSerializer(serializers.ModelSerializer):
