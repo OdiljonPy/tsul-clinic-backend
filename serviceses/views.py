@@ -48,7 +48,7 @@ class DocumentOrderViewSet(ViewSet):
         tags=['DocumentOrder'],
     )
     def check_document(self, request, document_id):
-        document = DocumentOrder.objects.filter(order_number=document_id).filter()
+        document = DocumentOrder.objects.filter(order_number=document_id).first()
         return Response({'response': DocumentOrderSerializer(document, context={'request': request}).data, 'ok': True},
                         status=status.HTTP_200_OK)
 

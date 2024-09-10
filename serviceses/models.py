@@ -33,12 +33,13 @@ class DocumentCategory(base_models.BaseModel):
     class Meta:
         verbose_name = "Категория документа"
         verbose_name_plural = "Категории документов"
-        ordering = ('created_at', )
+        ordering = ('created_at',)
 
 
 class DocumentType(base_models.BaseModel):
     document_name = models.CharField(max_length=150, verbose_name="Название документа")
-    document_category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE, verbose_name="Категория документа")
+    document_category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE,
+                                          verbose_name="Категория документа")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
     is_active = models.BooleanField(default=True, verbose_name="Активен")
 
@@ -53,7 +54,8 @@ class DocumentType(base_models.BaseModel):
 
 class DocumentOrder(base_models.BaseModel):
     order_number = models.CharField(max_length=150, blank=True, null=True, verbose_name="Номер заказа")
-    document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True, verbose_name="Категория документа")
+    document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
+                                          verbose_name="Категория документа")
     document_type = models.ForeignKey(DocumentType, on_delete=models.SET_NULL, null=True, verbose_name="Тип документа")
     customer_full_name = models.CharField(max_length=250, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
@@ -70,12 +72,19 @@ class DocumentOrder(base_models.BaseModel):
         ordering = ('created_at',)
 
 
+class ReadyDocuments(base_models.BaseModel):
+    document_order = models.ForeignKey(DocumentOrder, on_delete=models.CASCADE)
+    document_name = models.CharField(max_length=250)
+    document = models.FileField(upload_to="documents/%Y/%m/%d")
+
+
 class MeetingOrder(base_models.BaseModel):
     order_number = models.CharField(max_length=150, blank=True, null=True, verbose_name="Номен заказа")
     customer_full_name = models.CharField(max_length=150, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
-    meeting_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Цена встечи")
+    meeting_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
+                                        verbose_name="Цена встечи")
     meeting_status = models.IntegerField(default=0, choices=MEETING_ORDER_STATUS, verbose_name="Статус встречи")
     meeting_type = models.IntegerField(choices=MEETING_ORDER_TYPES, verbose_name="Тип встречи")
     meeting_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи")

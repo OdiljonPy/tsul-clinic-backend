@@ -5,7 +5,7 @@ from .models import (
     DocumentType,
     DocumentOrder,
     MeetingOrder,
-    Contacts
+    Contacts, ReadyDocuments
 )
 
 
@@ -27,11 +27,23 @@ class DocumentTypeSerializer(serializers.ModelSerializer):
         fields = ('id', 'document_name', 'document_category', 'price')
 
 
+class ReadyDocumentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReadyDocuments
+        fields = ('id', 'document_name', 'document')
+
+
 class DocumentOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentOrder
         fields = ('id', 'order_number', 'document_category', 'document_type', 'customer_full_name', 'customer_phone',
                   'customer_email', 'customer_message', 'status', 'created_at')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['ready_documents'] = ReadyDocumentsSerializer(instance.ready_documents.all(), many=True,
+                                                           context=self.context).data
+        return data
 
 
 class MeetingOrderSerializer(serializers.ModelSerializer):
