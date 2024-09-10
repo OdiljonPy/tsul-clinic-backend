@@ -8,7 +8,6 @@ from exceptions.exception import CustomApiException
 from .models import DocumentCategory, DocumentOrder
 from .serializers import (
     DocumentCategorySerializer,
-    DocumentTypeSerializer,
     DocumentOrderSerializer,
     MeetingOrderSerializer,
     ContactsSerializer
@@ -24,7 +23,8 @@ class DocumentCategoryViewSet(ViewSet):
     def list(self, request):
         categories = DocumentCategory.objects.filter(is_active=True)
         return Response(
-            {"result": DocumentCategorySerializer(categories, many=True, context={"request": request}).data, 'ok': True},
+            {"response": DocumentCategorySerializer(categories, many=True, context={"request": request}).data,
+             'ok': True},
             status=status.HTTP_200_OK)
 
 
