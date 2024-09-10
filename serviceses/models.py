@@ -1,3 +1,5 @@
+from tabnanny import verbose
+
 from django.db import models
 from abstract_models import base_models
 
@@ -73,9 +75,17 @@ class DocumentOrder(base_models.BaseModel):
 
 
 class ReadyDocuments(base_models.BaseModel):
-    document_order = models.ForeignKey(DocumentOrder, on_delete=models.CASCADE)
-    document_name = models.CharField(max_length=250)
-    document = models.FileField(upload_to="documents/%Y/%m/%d")
+    document_order = models.ForeignKey(DocumentOrder, on_delete=models.CASCADE, verbose_name="Заказ документа")
+    document_name = models.CharField(max_length=250, verbose_name="Название документа")
+    document = models.FileField(upload_to="documents/%Y/%m/%d", verbose_name="Документ")
+
+    def __str__(self):
+        return self.document_name
+
+    class Meta:
+        verbose_name = "Готовый документ"
+        verbose_name_plural = "Готовые документы"
+        ordering = ('created_at',)
 
 
 class MeetingOrder(base_models.BaseModel):
