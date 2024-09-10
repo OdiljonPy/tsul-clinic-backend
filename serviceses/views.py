@@ -54,8 +54,8 @@ class DocumentOrderViewSet(ViewSet):
 
     @swagger_auto_schema(
         operation_summary='Create order for meeting',
-        request_body=DocumentOrderSerializer,
-        responses={201: DocumentOrderSerializer()},
+        request_body=MeetingOrderSerializer,
+        responses={201: MeetingOrderSerializer()},
         tags=['DocumentOrder'],
     )
     def create_meeting(self, request):
