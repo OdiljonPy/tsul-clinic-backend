@@ -1,10 +1,16 @@
 from django.contrib import admin
-from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts
+from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts, ReadyDocuments
 
 
 class DocumentTypeAdminTabularInline(admin.TabularInline):
     model = DocumentType
     extra = 1
+
+
+class ReadyDocumentsTabularInline(admin.TabularInline):
+    model = ReadyDocuments
+    extra = 1
+
 
 
 @admin.register(DocumentCategory)
@@ -30,6 +36,7 @@ class DocumentOrderAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'order_number', 'customer_full_name')
     search_fields = ('id', 'order_number', 'customer_full_name')
     list_filter = ('status',)
+    inlines = (ReadyDocumentsTabularInline,)
 
 
 @admin.register(MeetingOrder)
