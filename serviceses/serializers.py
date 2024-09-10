@@ -37,7 +37,7 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
 class MeetingOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingOrder
-        fields = ('id', 'order_number', 'customer_full_name', 'customer_phone', 'customer_email')
+        fields = ('id', 'order_number', 'customer_full_name', 'customer_phone', 'customer_email', 'meeting_type')
 
 
 class ContactsSerializer(serializers.ModelSerializer):
