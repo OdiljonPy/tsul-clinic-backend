@@ -128,7 +128,7 @@ class OfficeAddressSerializer(serializers.ModelSerializer):
         if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
             language = request.META.get('HTTP_ACCEPT_LANGUAGE')
 
-        self.fields['address_name'] = serializers.CharField(source=f'about_us_{language}')
+        self.fields['address_name'] = serializers.CharField(source=f'address_name_{language}')
 
     class Meta:
         model = OfficeAddress
