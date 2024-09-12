@@ -64,10 +64,10 @@ class NewsViewSet(ViewSet):
     )
     def retrieve(self, request, pk):
         news = News.objects.filter(id=pk, is_published=True).first()
-        news.views_count += 1
-        news.save()
         if not news:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
+        news.views_count += 1
+        news.save()
         return Response({'response': NewsSerializer(news, context={'request': request}).data, 'ok': True},
                         status=status.HTTP_200_OK)
 
