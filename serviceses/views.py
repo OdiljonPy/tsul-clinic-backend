@@ -39,8 +39,11 @@ class DocumentOrderViewSet(ViewSet):
         serializer = DocumentOrderSerializer(data=request.data, context={'request': request})
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
-        serializer.save()
-        return Response({'response': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
+        order = serializer.save()
+        order.order_number = f'1000{order.id}'
+        order.save()
+
+        return Response({'response': order, 'ok': True}, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
         operation_summary='Check order for documents',
