@@ -43,7 +43,7 @@ class DocumentOrderViewSet(ViewSet):
         order.order_number = f'1000{order.id}'
         order.save()
 
-        return Response({'response': order, 'ok': True}, status=status.HTTP_201_CREATED)
+        return Response({'response': DocumentOrderSerializer(order).data, 'ok': True}, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
         operation_summary='Check order for documents',
