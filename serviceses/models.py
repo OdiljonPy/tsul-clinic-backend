@@ -66,15 +66,13 @@ class DocumentOrder(base_models.BaseModel):
     status = models.IntegerField(default=0, choices=DOCUMENT_ORDER_STATUS, verbose_name="Статус")
 
     def save(self, *args, **kwargs):
-        # Check if order_number is not already set
-        if not self.order_number:
-            # First save to get the ID
-            super(DocumentOrder, self).save(*args, **kwargs)
-            # Set the order number as '1000' + object ID
-            self.order_number = f"1000{self.id}"
+        if not self.pk:
+            super().save(*args, **kwargs)
+            self.order_number = f"1000{self.pk}"
 
-        # Save again with the updated order_number
-        super(DocumentOrder, self).save(*args, **kwargs)
+        self.order_number = f"1000{self.pk}"
+
+        super().save(update_fields=['order_number'])
 
     def __str__(self):
         return self.customer_full_name
