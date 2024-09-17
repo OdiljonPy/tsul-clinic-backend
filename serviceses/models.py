@@ -65,6 +65,11 @@ class DocumentOrder(base_models.BaseModel):
     customer_message = models.TextField(max_length=1000, verbose_name="Сообщение клиента")
     status = models.IntegerField(default=0, choices=DOCUMENT_ORDER_STATUS, verbose_name="Статус")
 
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            self.order_number = f"1000{self.id}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.customer_full_name
 
