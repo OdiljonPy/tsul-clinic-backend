@@ -185,8 +185,9 @@ class BaseViewSet(ViewSet):
     )
     def list_addition_link(self, request):
         links = AdditionalLinks.objects.filter(is_published=True)
-        return Response({'response': AdditionalLinksSerializer(links, many=True).data, 'ok': True},
-                        status=status.HTTP_200_OK)
+        return Response(
+            {'response': AdditionalLinksSerializer(links, many=True, context={'request': request}).data, 'ok': True},
+            status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Banner list',
