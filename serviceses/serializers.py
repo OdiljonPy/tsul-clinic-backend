@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from django.conf import settings
 from .models import (
     DocumentCategory,
     DocumentType,
@@ -10,6 +10,14 @@ from .models import (
 
 
 class DocumentCategorySerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['category_name'] = serializers.CharField(source=f'category_name_{language}')
     class Meta:
         model = DocumentCategory
         fields = ('id', 'category_name')
@@ -22,6 +30,15 @@ class DocumentCategorySerializer(serializers.ModelSerializer):
 
 
 class DocumentTypeSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['document_name'] = serializers.CharField(source=f'document_name_{language}')
+
     class Meta:
         model = DocumentType
         fields = ('id', 'document_name', 'document_category', 'price')
