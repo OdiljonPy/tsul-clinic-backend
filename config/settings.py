@@ -69,7 +69,6 @@ TEMPLATES = [
     },
 ]
 
-
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -77,7 +76,6 @@ CORS_ALLOW_HEADERS = [
     'content-type',
     'Authorization'
 ]
-
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -101,7 +99,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', 5432),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -267,6 +264,6 @@ JAZZMIN_UI_TWEAKS = {
     }
 }
 
-
-
-
+TELEGRAM_BOT_TOKEN = "6778721432:AAFDnAqvOlJNqY5t9MBUJ6pXcpE0PRm-Jys"
+TELEGRAM_CHANNEL_ID = "-1002126509053"
+TELEGRAM_API_URL = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage?chat_id={TELEGRAM_CHANNEL_ID}&text="
