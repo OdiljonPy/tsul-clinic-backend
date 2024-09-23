@@ -16,7 +16,7 @@ MESSAGES = {
     1: {'message': "{} raqamli so'rovingiz qabul qilindi"},
     2: {'message': "{} raqamli hujjat buyurtmangiz yaratildi.\nTo'lov qilingandan so'ng buyurtma faollashadi"},
     3: {'message': "{} raqamli so'rovingiz uchun to'lov qabul qilindi"},
-    4: {'message': "{} raqamli so'rovingiz holati: {} "},
+    4: {'message': "{} raqamli so'rovingiz holati: {} ga o'zgartirildi "},
     5: {'message': "{} raqamli video uchrashuv {} vaqtga belgilandi"},
     6: {'message': "{} raqamli telefon orqali muloqot {} vaqtga belgilandi"},
     7: {'message': "{} raqamli konsultatsiya {} vaqtga belgilandi"}
