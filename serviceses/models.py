@@ -1,5 +1,7 @@
-from tabnanny import verbose
-
+from utils.notification_messages import get_message, MessageEnumCode
+from utils.send_notifications import message_create
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from django.db import models
 from abstract_models import base_models
 
@@ -65,7 +67,6 @@ class DocumentOrder(base_models.BaseModel):
     customer_message = models.TextField(max_length=1000, verbose_name="Сообщение клиента")
     status = models.IntegerField(default=0, choices=DOCUMENT_ORDER_STATUS, verbose_name="Статус")
 
-
     def __str__(self):
         return self.customer_full_name
 
@@ -73,6 +74,21 @@ class DocumentOrder(base_models.BaseModel):
         verbose_name = "Заказ документа"
         verbose_name_plural = "Заказы документов"
         ordering = ('created_at',)
+
+
+@receiver([post_save, pre_save], sender=DocumentOrder)
+def send_telegram_notification(sender, instance, **kwargs):
+    if kwargs.get('created', False):
+        message_create(get_message(MessageEnumCode.CREATE_DOCUMENT), item1=instance.order_number)
+        return
+    old_instance = sender.objects.get(pk=instance.pk)
+    if old_instance.status != instance.status and instance.status == 1:
+        message_create(get_message(MessageEnumCode.PAYMENT_RECEIVED), item1=instance.order_number)
+        return
+    if old_instance.status != instance.status and instance.status != 1:
+        message_create(get_message(MessageEnumCode.CHANGE_STATUS_DOCUMENT), item1=instance.order_number,
+                       item2=dict(DOCUMENT_ORDER_STATUS).get(instance.status))
+        return
 
 
 class ReadyDocuments(base_models.BaseModel):
@@ -107,6 +123,26 @@ class MeetingOrder(base_models.BaseModel):
         verbose_name = "Заказ встречи"
         verbose_name_plural = "Заказы встречь"
         ordering = ('created_at',)
+
+
+@receiver([post_save, pre_save], sender=MeetingOrder)
+def create_document_notification(sender, instance, **kwargs):
+    if kwargs.get('created', False):
+        message_create(get_message(MessageEnumCode.CREATE_MEETING), item1=instance.order_number)
+        return
+    old_instance = sender.objects.get(pk=instance.pk)
+    if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 0:
+        message_create(get_message(MessageEnumCode.PHONE_MEETING_TIME), item1=instance.order_number,
+                       item2=instance.meeting_time)
+        return
+    if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 1:
+        message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
+                       item2=instance.meeting_time)
+        return
+    if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 2:
+        message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
+                       item2=instance.meeting_time)
+        return
 
 
 class Contacts(base_models.BaseModel):

@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts, ReadyDocuments
 
 
@@ -10,7 +11,6 @@ class DocumentTypeAdminTabularInline(admin.TabularInline):
 class ReadyDocumentsTabularInline(admin.TabularInline):
     model = ReadyDocuments
     extra = 1
-
 
 
 @admin.register(DocumentCategory)
@@ -28,6 +28,10 @@ class DocumentTypeAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'document_name')
     search_fields = ('id', 'document_name')
     list_filter = ('is_active',)
+
+    # def save_model(self, request, obj, form, change):
+    # if obj.price:
+    #     message_create(get_message(MessageEnumCode.PAYMENT_RECEIVED), item1=obj.)
 
 
 @admin.register(DocumentOrder)
