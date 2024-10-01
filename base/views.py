@@ -1,12 +1,13 @@
-from drf_yasg.utils import swagger_auto_schema
+from collections import defaultdict
+
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
-from .repository.get_news import get_news
 from .models import (
     News,
     Team,
@@ -18,7 +19,10 @@ from .models import (
     ServicesCategory,
     Services,
     AdditionalLinks,
-    Banner)
+    Banner,
+    Partners, CHOICE_PARTNERS
+)
+from .repository.get_news import get_news
 from .serializers import (
     PaginatorSerializer,
     NewsSerializer,
@@ -31,7 +35,8 @@ from .serializers import (
     ServicesCategorySerializer,
     ServicesSerializer,
     AdditionalLinksSerializer,
-    BannerSerializer
+    BannerSerializer,
+    PartnersSerializer
 )
 
 
@@ -92,6 +97,27 @@ class TeamViewSet(ViewSet):
         teams = Team.objects.all()
         return Response({'response': TeamSerializer(teams, context={'request': request}, many=True).data, 'ok': True},
                         status=status.HTTP_200_OK)
+
+
+class PartnersViewSet(ViewSet):
+    @swagger_auto_schema(
+        operation_summary='Partner list',
+        responses={200: PartnersSerializer(many=True)},
+        tags=['Partner'],
+    )
+    def list(self, request):
+        partners = Partners.objects.all()
+        serialized_data = PartnersSerializer(partners, context={'request': request}, many=True).data
+
+        # Group by category using defaultdict
+        grouped_data = defaultdict(list)
+        for partner in serialized_data:
+            grouped_data[partner['category']].append(partner)
+
+        # Convert defaultdict to a standard dict and ensure all categories are included
+        response_data = {str(category): grouped_data.get(category, []) for category, _ in CHOICE_PARTNERS}
+
+        return Response({'response': response_data, 'ok': True}, status=status.HTTP_200_OK)
 
 
 class BaseViewSet(ViewSet):

@@ -18,6 +18,7 @@ class DocumentCategorySerializer(serializers.ModelSerializer):
             language = request.META.get('HTTP_ACCEPT_LANGUAGE')
 
         self.fields['category_name'] = serializers.CharField(source=f'category_name_{language}')
+
     class Meta:
         model = DocumentCategory
         fields = ('id', 'category_name')
@@ -54,7 +55,7 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentOrder
         fields = ('id', 'order_number', 'document_category', 'document_type', 'customer_full_name', 'customer_phone',
-                  'customer_email', 'customer_message', 'status', 'created_at')
+                  'customer_email', 'customer_message', 'status', 'price', 'created_at')
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

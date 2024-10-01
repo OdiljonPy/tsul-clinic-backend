@@ -1,9 +1,10 @@
-from utils.notification_messages import get_message, MessageEnumCode
-from utils.send_notifications import message_create
+from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.db import models
+
 from abstract_models import base_models
+from utils.notification_messages import get_message, MessageEnumCode
+from utils.send_notifications import message_create
 
 DOCUMENT_ORDER_STATUS = (
     (0, 'ОЖИДАЕТСЯ ПЛАТЕЖ'),
@@ -60,6 +61,7 @@ class DocumentOrder(base_models.BaseModel):
     order_number = models.CharField(max_length=150, blank=True, null=True, verbose_name="Номер заказа")
     document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
                                           verbose_name="Категория документа")
+    price = models.PositiveIntegerField(default=0, blank=True)
     document_type = models.ForeignKey(DocumentType, on_delete=models.SET_NULL, null=True, verbose_name="Тип документа")
     customer_full_name = models.CharField(max_length=250, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
@@ -77,17 +79,20 @@ class DocumentOrder(base_models.BaseModel):
 
 
 @receiver([post_save, pre_save], sender=DocumentOrder)
-def send_telegram_notification(sender, instance, **kwargs):
+def create_document_notification(sender, instance, **kwargs):
     if kwargs.get('created', False):
-        message_create(get_message(MessageEnumCode.CREATE_DOCUMENT), item1=instance.order_number)
+        message_create(get_message(MessageEnumCode.CREATE), item1=instance.order_number,
+                       recipient=instance.customer_phone, user_id=instance.id)
         return
     old_instance = sender.objects.get(pk=instance.pk)
     if old_instance.status != instance.status and instance.status == 1:
-        message_create(get_message(MessageEnumCode.PAYMENT_RECEIVED), item1=instance.order_number)
+        message_create(get_message(MessageEnumCode.PAYMENT_RECEIVED), item1=instance.order_number,
+                       recipient=instance.customer_phone, user_id=instance.id)
         return
     if old_instance.status != instance.status and instance.status != 1:
         message_create(get_message(MessageEnumCode.CHANGE_STATUS_DOCUMENT), item1=instance.order_number,
-                       item2=dict(DOCUMENT_ORDER_STATUS).get(instance.status))
+                       item2=dict(DOCUMENT_ORDER_STATUS).get(instance.status), recipient=instance.customer_phone,
+                       user_id=instance.id)
         return
 
 
@@ -126,22 +131,23 @@ class MeetingOrder(base_models.BaseModel):
 
 
 @receiver([post_save, pre_save], sender=MeetingOrder)
-def create_document_notification(sender, instance, **kwargs):
+def create_meeting_notification(sender, instance, **kwargs):
     if kwargs.get('created', False):
-        message_create(get_message(MessageEnumCode.CREATE_MEETING), item1=instance.order_number)
+        message_create(get_message(MessageEnumCode.CREATE), item1=instance.order_number,
+                       recipient=instance.customer_phone, user_id=instance.id)
         return
     old_instance = sender.objects.get(pk=instance.pk)
     if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 0:
         message_create(get_message(MessageEnumCode.PHONE_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.meeting_time)
+                       item2=instance.meeting_time, recipient=instance.customer_phone, user_id=instance.id)
         return
     if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 1:
         message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.meeting_time)
+                       item2=instance.meeting_time, recipient=instance.customer_phone, user_id=instance.id)
         return
     if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 2:
         message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.meeting_time)
+                       item2=instance.meeting_time, recipient=instance.customer_phone, user_id=instance.id)
         return
 
 
