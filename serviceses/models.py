@@ -1,3 +1,5 @@
+from shutil import posix
+
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
@@ -78,7 +80,7 @@ class DocumentOrder(base_models.BaseModel):
         ordering = ('created_at',)
 
 
-@receiver([post_save, pre_save], sender=DocumentOrder)
+@receiver([post_save], sender=DocumentOrder)
 def create_document_notification(sender, instance, **kwargs):
     if kwargs.get('created', False):
         message_create(get_message(MessageEnumCode.CREATE), item1=instance.order_number,
@@ -130,7 +132,7 @@ class MeetingOrder(base_models.BaseModel):
         ordering = ('created_at',)
 
 
-@receiver([post_save, pre_save], sender=MeetingOrder)
+@receiver([post_save], sender=MeetingOrder)
 def create_meeting_notification(sender, instance, **kwargs):
     if kwargs.get('created', False):
         message_create(get_message(MessageEnumCode.CREATE), item1=instance.order_number,
