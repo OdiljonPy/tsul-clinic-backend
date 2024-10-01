@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Banner, News, Team, Statistics, CustomerOpinion,
     FAQ, AboutUs, Info, OfficeAddress, ServicesCategory,
-    Services, AdditionalLinks
+    Services, AdditionalLinks, Partners
 )
 
 
@@ -93,3 +93,10 @@ class AdditionalLinksAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'name')
     search_fields = ('id', 'name')
     list_filter = ('is_published',)
+
+@admin.register(Partners)
+class PartnersAdmin(admin.ModelAdmin):
+    list_display = ('id', 'full_name', 'position')
+    list_display_links = ('id', 'full_name')
+    search_fields = ('id', 'full_name', 'position')
+    list_filter = ('position',)

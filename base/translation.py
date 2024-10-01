@@ -9,7 +9,9 @@ from .models import (
     OfficeAddress,
     ServicesCategory,
     Services,
-    AdditionalLinks)
+    AdditionalLinks,
+    Partners
+)
 
 
 class BaseTranslationOptions(TranslationOptions):
@@ -23,6 +25,9 @@ class NewsTranslationOptions(TranslationOptions):
 class TeamTranslationOptions(TranslationOptions):
     fields = ('full_name', 'position')
 
+
+class PartnersTranslationOptions(TranslationOptions):
+    fields = ('full_name', 'position')
 
 class CustomerOpinionTranslationOptions(TranslationOptions):
     fields = ('company_name', 'position', 'full_name', 'opinion')
@@ -55,6 +60,7 @@ class AdditionalLinksTranslationOptions(TranslationOptions):
 translator.register(Banner, BaseTranslationOptions)
 translator.register(News, NewsTranslationOptions)
 translator.register(Team, TeamTranslationOptions)
+translator.register(Partners, PartnersTranslationOptions)
 translator.register(CustomerOpinion, CustomerOpinionTranslationOptions)
 translator.register(FAQ, FAQTranslationOptions)
 translator.register(AboutUs, AboutUsTranslationOptions)

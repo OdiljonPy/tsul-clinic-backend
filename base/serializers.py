@@ -15,7 +15,8 @@ from .models import (
     ServicesCategory,
     Services,
     AdditionalLinks,
-    Banner
+    Banner,
+    Partners
 )
 
 
@@ -221,3 +222,20 @@ class PaginatorSerializer(serializers.Serializer):
         if page_size < 0 or page < 0:
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message='Page or page size is invalid')
         return attrs
+
+
+
+class PartnersSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['full_name'] = serializers.CharField(source=f'full_name_{language}')
+        self.fields['position'] = serializers.CharField(source=f'position_{language}')
+
+    class Meta:
+        model = Partners
+        fields = ('id', 'full_name', 'position', 'image', 'category')
