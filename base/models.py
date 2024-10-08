@@ -3,6 +3,12 @@ from django.db import models
 
 from abstract_models import base_models
 
+CHOICE_PARTNERS = (
+    (1, 'Юристы'),
+    (2, 'Натарус'),
+    (3, 'Аудиторы')
+)
+
 
 class Banner(base_models.BaseModel):
     text = models.CharField(max_length=150, verbose_name="Текст")
@@ -124,7 +130,8 @@ class Info(base_models.BaseModel):
 
 
 class OfficeAddress(base_models.BaseModel):
-    info = models.ForeignKey(Info, on_delete=models.CASCADE, related_name='office_address', null=True, verbose_name="Информация")
+    info = models.ForeignKey(Info, on_delete=models.CASCADE, related_name='office_address', null=True,
+                             verbose_name="Информация")
     address_name = models.CharField(max_length=250, verbose_name="Название адреса")
     latitude = models.FloatField(verbose_name="Широта")
     longitude = models.FloatField(verbose_name="Долгота")
@@ -177,4 +184,19 @@ class AdditionalLinks(base_models.BaseModel):
     class Meta:
         verbose_name = "Дополнительная ссылка"
         verbose_name_plural = "Дополнительные ссылки"
+        ordering = ('created_at',)
+
+
+class Partners(base_models.BaseModel):
+    full_name = models.CharField(max_length=150, verbose_name="Полное имя")
+    position = models.CharField(max_length=255, verbose_name="Позиция")
+    image = models.ImageField(upload_to='partner/', verbose_name="Изображение")
+    category = models.IntegerField(choices=CHOICE_PARTNERS, default=1)
+
+    def __str__(self):
+        return self.full_name
+
+    class Meta:
+        verbose_name = "Партнер"
+        verbose_name_plural = "Партнеры"
         ordering = ('created_at',)
