@@ -78,9 +78,14 @@ class DocumentOrder(base_models.BaseModel):
         ordering = ('created_at',)
 
     def save(self, *args, **kwargs):
-        if self.order_number is None:  # Only assign if it hasn't been set
-            self.order_number = get_next_order_number(DocumentOrder)
-        super(DocumentOrder, self).save(*args, **kwargs)
+        if self.order_number is None:
+            last_order = DocumentOrder.objects.all().order_by('id').last()
+            if last_order:
+                self.order_number = 100000000 + last_order.id + 1
+            else:
+                self.order_number = 100000000
+        super().save(*args, **kwargs)
+
 
 
 @receiver([post_save], sender=DocumentOrder)
@@ -135,9 +140,13 @@ class MeetingOrder(base_models.BaseModel):
         ordering = ('created_at',)
 
     def save(self, *args, **kwargs):
-        if self.order_number is None:  # Only assign if it hasn't been set
-            self.order_number = get_next_order_number(MeetingOrder)
-        super(MeetingOrder, self).save(*args, **kwargs)
+        if self.order_number is None:
+            last_order = MeetingOrder.objects.all().order_by('id').last()
+            if last_order:
+                self.order_number = 500000000 + last_order.id + 1
+            else:
+                self.order_number = 500000000
+        super().save(*args, **kwargs)
 
 
 @receiver([post_save], sender=MeetingOrder)
@@ -172,15 +181,6 @@ class Contacts(base_models.BaseModel):
         return self.full_name
 
     class Meta:
-        verbose_name = "Контракт"
-        verbose_name_plural = "Контракты"
+        verbose_name = "Контакт"
+        verbose_name_plural = "Контакты"
         ordering = ('created_at',)
-
-
-
-
-def get_next_order_number(model_class):
-    max_order_number = model_class.objects.aggregate(max_value=models.Max('order_number'))['max_value']
-    if max_order_number is None:
-        return 100000000  # Starting point if no orders exist
-    return max_order_number + 1
