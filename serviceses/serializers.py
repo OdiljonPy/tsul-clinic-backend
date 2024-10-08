@@ -66,6 +66,9 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Get the document_type's price and assign it to the price field
         document_type = validated_data.get('document_type')
+        validated_data.pop('order_number')
+        validated_data.pop('price')
+        validated_data.pop('status')
         validated_data['price'] = document_type.price if document_type else 0
 
         # Create and return the DocumentOrder instance
@@ -76,6 +79,14 @@ class MeetingOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingOrder
         fields = ('id', 'order_number', 'customer_full_name', 'customer_phone', 'customer_email', 'meeting_type')
+
+    def create(self, validated_data):
+        # Get the document_type's price and assign it to the price field
+        document_type = validated_data.get('document_type')
+        validated_data.pop('order_number')
+
+        # Create and return the DocumentOrder instance
+        return super().create(validated_data)
 
 
 class ContactsSerializer(serializers.ModelSerializer):

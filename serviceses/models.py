@@ -27,6 +27,21 @@ MEETING_ORDER_STATUS = (
     (3, 'ОТМЕНЕНО')
 )
 
+oylar = {
+    1: "yanvar",
+    2: "fevral",
+    3: "mart",
+    4: "aprel",
+    5: "may",
+    6: "iyun",
+    7: "iyul",
+    8: "avgust",
+    9: "sentyabr",
+    10: "oktyabr",
+    11: "noyabr",
+    12: "dekabr"
+}
+
 
 class DocumentCategory(base_models.BaseModel):
     category_name = models.CharField(max_length=150, verbose_name="Название категории")
@@ -85,7 +100,6 @@ class DocumentOrder(base_models.BaseModel):
             else:
                 self.order_number = 100000000
         super().save(*args, **kwargs)
-
 
 
 @receiver([post_save], sender=DocumentOrder)
@@ -148,6 +162,14 @@ class MeetingOrder(base_models.BaseModel):
                 self.order_number = 500000000
         super().save(*args, **kwargs)
 
+    def get_meeting_time_as_text(self):
+        if self.meeting_time:
+            kun = self.meeting_time.day
+            oy = oylar[self.meeting_time.month]
+            soat = self.meeting_time.strftime("%H:%M")
+            return f"{kun}-{oy} soat {soat}"
+        return "Время встречи не задано"
+
 
 @receiver([post_save], sender=MeetingOrder)
 def create_meeting_notification(sender, instance, **kwargs):
@@ -158,15 +180,15 @@ def create_meeting_notification(sender, instance, **kwargs):
     old_instance = sender.objects.get(pk=instance.pk)
     if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 0:
         message_create(get_message(MessageEnumCode.PHONE_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.meeting_time, recipient=instance.customer_phone, user_id=instance.id)
+                       item2=instance.get_meeting_time_as_text(), recipient=instance.customer_phone, user_id=instance.id)
         return
     if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 1:
         message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.meeting_time, recipient=instance.customer_phone, user_id=instance.id)
+                       item2=instance.get_meeting_time_as_text(), recipient=instance.customer_phone, user_id=instance.id)
         return
     if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 2:
         message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.meeting_time, recipient=instance.customer_phone, user_id=instance.id)
+                       item2=instance.get_meeting_time_as_text(), recipient=instance.customer_phone, user_id=instance.id)
         return
 
 

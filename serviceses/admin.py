@@ -43,6 +43,7 @@ class DocumentOrderAdmin(admin.ModelAdmin):
     search_fields = ('id', 'order_number', 'customer_full_name')
     list_filter = ('status',)
     inlines = (ReadyDocumentsTabularInline,)
+    readonly_fields = ('order_number',)
 
 
 @admin.register(MeetingOrder)
@@ -51,6 +52,7 @@ class MeetingOrderAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'order_number', 'customer_full_name')
     search_fields = ('id', 'order_number', 'customer_full_name', 'customer_phone')
     list_filter = ('meeting_type', 'meeting_time', 'meeting_status')
+    readonly_fields = ('order_number',)
 
 
 @admin.register(Contacts)
