@@ -1,7 +1,9 @@
 from django.contrib import admin
-
+from admin_interface.models import Theme
 from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts, ReadyDocuments
 
+
+admin.site.unregister(Theme)
 
 class DocumentTypeAdminTabularInline(admin.TabularInline):
     model = DocumentType
