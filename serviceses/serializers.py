@@ -25,7 +25,7 @@ class DocumentCategorySerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['document_type'] = DocumentTypeSerializer(instance.documenttype_set.all(), many=True,
+        data['document_type'] = DocumentTypeSerializer(instance.documenttype_set.filter(is_active=True), many=True,
                                                        context=self.context).data
         return data
 
@@ -62,6 +62,14 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
         data['ready_documents'] = ReadyDocumentsSerializer(instance.readydocuments_set.all(), many=True,
                                                            context=self.context).data
         return data
+
+    def create(self, validated_data):
+        # Get the document_type's price and assign it to the price field
+        document_type = validated_data.get('document_type')
+        validated_data['price'] = document_type.price if document_type else 0
+
+        # Create and return the DocumentOrder instance
+        return super().create(validated_data)
 
 
 class MeetingOrderSerializer(serializers.ModelSerializer):

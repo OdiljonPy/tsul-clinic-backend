@@ -1,7 +1,5 @@
-from shutil import posix
-
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from abstract_models import base_models
@@ -60,7 +58,7 @@ class DocumentType(base_models.BaseModel):
 
 
 class DocumentOrder(base_models.BaseModel):
-    order_number = models.CharField(max_length=150, blank=True, null=True, verbose_name="Номер заказа")
+    order_number = models.BigIntegerField(blank=True, null=True, verbose_name="Номер заказа")
     document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
                                           verbose_name="Категория документа")
     price = models.PositiveIntegerField(default=0, blank=True)
@@ -78,6 +76,11 @@ class DocumentOrder(base_models.BaseModel):
         verbose_name = "Заказ документа"
         verbose_name_plural = "Заказы документов"
         ordering = ('created_at',)
+
+    def save(self, *args, **kwargs):
+        if self.order_number is None:  # Only assign if it hasn't been set
+            self.order_number = get_next_order_number(DocumentOrder)
+        super(DocumentOrder, self).save(*args, **kwargs)
 
 
 @receiver([post_save], sender=DocumentOrder)
@@ -113,7 +116,7 @@ class ReadyDocuments(base_models.BaseModel):
 
 
 class MeetingOrder(base_models.BaseModel):
-    order_number = models.CharField(max_length=150, blank=True, null=True, verbose_name="Номен заказа")
+    order_number = models.BigIntegerField(blank=True, null=True, verbose_name="Номен заказа")
     customer_full_name = models.CharField(max_length=150, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
@@ -130,6 +133,11 @@ class MeetingOrder(base_models.BaseModel):
         verbose_name = "Заказ встречи"
         verbose_name_plural = "Заказы встречь"
         ordering = ('created_at',)
+
+    def save(self, *args, **kwargs):
+        if self.order_number is None:  # Only assign if it hasn't been set
+            self.order_number = get_next_order_number(MeetingOrder)
+        super(MeetingOrder, self).save(*args, **kwargs)
 
 
 @receiver([post_save], sender=MeetingOrder)
@@ -167,3 +175,12 @@ class Contacts(base_models.BaseModel):
         verbose_name = "Контракт"
         verbose_name_plural = "Контракты"
         ordering = ('created_at',)
+
+
+
+
+def get_next_order_number(model_class):
+    max_order_number = model_class.objects.aggregate(max_value=models.Max('order_number'))['max_value']
+    if max_order_number is None:
+        return 100000000  # Starting point if no orders exist
+    return max_order_number + 1
