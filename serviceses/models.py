@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from abstract_models import base_models
@@ -102,22 +102,47 @@ class DocumentOrder(base_models.BaseModel):
         super().save(*args, **kwargs)
 
 
-@receiver([post_save], sender=DocumentOrder)
-def create_document_notification(sender, instance, **kwargs):
-    if kwargs.get('created', False):
-        message_create(get_message(MessageEnumCode.CREATE), item1=instance.order_number,
-                       recipient=instance.customer_phone, user_id=instance.id)
-        return
-    old_instance = sender.objects.get(pk=instance.pk)
-    if old_instance.status != instance.status and instance.status == 1:
-        message_create(get_message(MessageEnumCode.PAYMENT_RECEIVED), item1=instance.order_number,
-                       recipient=instance.customer_phone, user_id=instance.id)
-        return
-    if old_instance.status != instance.status and instance.status != 1:
-        message_create(get_message(MessageEnumCode.CHANGE_STATUS_DOCUMENT), item1=instance.order_number,
-                       item2=dict(DOCUMENT_ORDER_STATUS).get(instance.status), recipient=instance.customer_phone,
-                       user_id=instance.id)
-        return
+@receiver(pre_save, sender=DocumentOrder)
+def track_old_instance(sender, instance, **kwargs):
+    if instance.pk:
+        # Store the old instance's status in the instance itself
+        old_instance = sender.objects.get(pk=instance.pk)
+        instance._old_status = old_instance.status
+
+
+
+@receiver(pre_save, sender=DocumentOrder)
+def track_old_instance(sender, instance, **kwargs):
+    if instance.pk:
+        instance._old_status = sender.objects.filter(pk=instance.pk).values('status').first()['status']
+
+
+@receiver(post_save, sender=DocumentOrder)
+def create_document_notification(sender, instance, created, **kwargs):
+    if created:
+        message_create(
+            get_message(MessageEnumCode.CREATE),
+            item1=instance.order_number,
+            recipient=instance.customer_phone,
+            user_id=instance.id
+        )
+    elif hasattr(instance, '_old_status') and instance._old_status != instance.status:
+        status_messages = {
+            1: get_message(MessageEnumCode.PAYMENT_RECEIVED),
+            2: "ko'rib chiqilmoqta",
+            3: "tayyor",
+            4: "bekor qilindi"
+        }
+        status_message = status_messages.get(instance.status)
+
+        if status_message:
+            message_create(
+                get_message(MessageEnumCode.CHANGE_STATUS_DOCUMENT) if instance.status > 1 else status_message,
+                item1=instance.order_number,
+                item2=status_message if instance.status > 1 else None,
+                recipient=instance.customer_phone,
+                user_id=instance.id
+            )
 
 
 class ReadyDocuments(base_models.BaseModel):
@@ -171,25 +196,69 @@ class MeetingOrder(base_models.BaseModel):
         return "Время встречи не задано"
 
 
-@receiver([post_save], sender=MeetingOrder)
-def create_meeting_notification(sender, instance, **kwargs):
-    if kwargs.get('created', False):
-        message_create(get_message(MessageEnumCode.CREATE), item1=instance.order_number,
-                       recipient=instance.customer_phone, user_id=instance.id)
-        return
-    old_instance = sender.objects.get(pk=instance.pk)
-    if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 0:
-        message_create(get_message(MessageEnumCode.PHONE_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.get_meeting_time_as_text(), recipient=instance.customer_phone, user_id=instance.id)
-        return
-    if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 1:
-        message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.get_meeting_time_as_text(), recipient=instance.customer_phone, user_id=instance.id)
-        return
-    if old_instance.meeting_time == instance.meeting_time and instance.meeting_type == 2:
-        message_create(get_message(MessageEnumCode.VIDEO_MEETING_TIME), item1=instance.order_number,
-                       item2=instance.get_meeting_time_as_text(), recipient=instance.customer_phone, user_id=instance.id)
-        return
+@receiver(pre_save, sender=MeetingOrder)
+def track_old_instance(sender, instance, **kwargs):
+    # Capture the old instance data before saving the updated instance
+    if instance.pk:
+        instance._old_instance = sender.objects.filter(pk=instance.pk).values('meeting_time', 'meeting_type', 'meeting_status').first()
+
+
+@receiver(post_save, sender=MeetingOrder)
+def create_meeting_notification(sender, instance, created, **kwargs):
+    # Handle notifications for newly created or updated MeetingOrders
+    if created:
+        # Send message for new order creation
+        message_create(
+            get_message(MessageEnumCode.CREATE),
+            item1=instance.order_number,
+            recipient=instance.customer_phone,
+            user_id=instance.id
+        )
+    else:
+        # Handle updates for meeting_time, meeting_type, and meeting_status
+        if hasattr(instance, '_old_instance'):
+            old_meeting_time = instance._old_instance['meeting_time']
+            old_meeting_type = instance._old_instance['meeting_type']
+            old_meeting_status = instance._old_instance['meeting_status']
+
+            # Check for meeting time change and relevant meeting type
+            if instance.meeting_status == 1 and old_meeting_time != instance.meeting_time:
+                if instance.meeting_type == 1:
+                    message_type = MessageEnumCode.VIDEO_MEETING_TIME
+                elif instance.meeting_type == 0:
+                    message_type = MessageEnumCode.PHONE_MEETING_TIME
+                elif instance.meeting_type == 3:
+                    message_type = MessageEnumCode.MEETING_TIME
+                else:
+                    message_type = None
+
+                if message_type:
+                    message_create(
+                        get_message(message_type),
+                        item1=instance.order_number,
+                        item2=instance.get_meeting_time_as_text(),
+                        recipient=instance.customer_phone,
+                        user_id=instance.id
+                    )
+            # Check for meeting status changes
+            if instance.meeting_status == 2:
+                # Uchrashuv yakunlandi
+                message_create(
+                    get_message(MessageEnumCode.CHANGE_STATUS_DOCUMENT),
+                    item1=instance.order_number,
+                    item2="Uchrashuv yakunlandi",
+                    recipient=instance.customer_phone,
+                    user_id=instance.id
+                )
+            elif instance.meeting_status == 3:
+                # Uchrashuv bekor qilindi
+                message_create(
+                    get_message(MessageEnumCode.CHANGE_STATUS_DOCUMENT),
+                    item1=instance.order_number,
+                    item2="Uchrashuv bekor qilindi",
+                    recipient=instance.customer_phone,
+                    user_id=instance.id
+                )
 
 
 class Contacts(base_models.BaseModel):
