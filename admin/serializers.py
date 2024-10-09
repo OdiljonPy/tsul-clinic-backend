@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
+from ckeditor.fields import RichTextField
 
 from base.models import Banner, News, Team, Statistics, CustomerOpinion, FAQ, AboutUs, Info, OfficeAddress, Services, \
     ServicesCategory, AdditionalLinks, Partners
@@ -8,51 +9,48 @@ from serviceses.models import DocumentCategory, DocumentType, DocumentOrder, Rea
 
 
 class BannerAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
-
-        self.fields['text'] = serializers.CharField(source=f'text_{language}')
+    text_uz = serializers.CharField(max_length=150)
+    text_ru = serializers.CharField(max_length=150)
+    text_en = serializers.CharField(max_length=150)
 
     class Meta:
         model = Banner
-        fields = ['id', 'text', 'image']
+        fields = ['id', 'text', 'text_uz', 'text_ru', "text_en", 'image']
 
 
 class NewsAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+    title_uz = serializers.CharField(max_length=150)
+    title_ru = serializers.CharField(max_length=150)
+    title_en = serializers.CharField(max_length=150)
 
-        self.fields['title'] = serializers.CharField(source=f'title_{language}')
-        self.fields['short_description'] = serializers.CharField(source=f'short_description_{language}')
-        self.fields['content'] = serializers.CharField(source=f'content_{language}')
+    short_description_uz = serializers.CharField(max_length=225)
+    short_description_ru = serializers.CharField(max_length=225)
+    short_description_en = serializers.CharField(max_length=225)
+
+    content_uz = RichTextField()
+    content_ru = RichTextField()
+    content_en = RichTextField()
 
     class Meta:
         model = News
-        fields = ['id', "title", "short_description", 'image', 'content', 'views_count', 'is_published']
+        fields = ['id', "title", "short_description", 'image', 'content', 'views_count', 'is_published', 'title_uz',
+                  'title_ru', 'title_en', 'short_description_uz', 'short_description_ru', 'short_description_en',
+                  'content_uz', 'content_ru', 'content_en']
 
 
 class TeamAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+    full_name_uz = serializers.CharField(max_length=150)
+    full_name_ru = serializers.CharField(max_length=150)
+    full_name_en = serializers.CharField(max_length=150)
 
-        self.fields['full_name'] = serializers.CharField(source=f'full_name_{language}')
-        self.fields['position'] = serializers.CharField(source=f'position_{language}')
+    position_uz = serializers.CharField(max_length=255)
+    position_ru = serializers.CharField(max_length=255)
+    position_en = serializers.CharField(max_length=255)
 
     class Meta:
         model = Team
-        fields = ['id', 'full_name', 'position', 'image']
+        fields = ['id', 'full_name', 'position', 'image', 'full_name_uz', 'full_name_ru', 'full_name_en', 'position_uz',
+                  'position_ru', 'position_en']
 
 
 class StatisticsAdminSerializer(serializers.ModelSerializer):
@@ -62,53 +60,57 @@ class StatisticsAdminSerializer(serializers.ModelSerializer):
 
 
 class CustomerOpinionAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+    company_name_uz = serializers.CharField(max_length=100)
+    company_name_ru = serializers.CharField(max_length=100)
+    company_name_en = serializers.CharField(max_length=100)
 
-        self.fields['company_name'] = serializers.CharField(source=f'company_name_{language}')
-        self.fields['position'] = serializers.CharField(source=f'position_{language}')
-        self.fields['full_name'] = serializers.CharField(source=f'full_name_{language}')
-        self.fields['opinion'] = serializers.CharField(source=f'opinion_{language}')
+    position_uz = serializers.CharField(max_length=150)
+    position_ru = serializers.CharField(max_length=150)
+    position_en = serializers.CharField(max_length=150)
+
+    full_name_uz = serializers.CharField(max_length=150)
+    full_name_ru = serializers.CharField(max_length=150)
+    full_name_en = serializers.CharField(max_length=150)
+
+    opinion_uz = serializers.CharField(max_length=800)
+    opinion_ru = serializers.CharField(max_length=800)
+    opinion_en = serializers.CharField(max_length=800)
 
     class Meta:
         model = CustomerOpinion
-        fields = ['id', 'company_name', 'position', 'full_name', 'opinion', 'image']
+        fields = ['id', 'company_name', 'position', 'full_name', 'opinion', 'image', 'company_name_uz',
+                  'company_name_ru', "company_name_en", 'position_uz', 'position_ru', 'position_en', 'full_name_uz',
+                  'full_name_ru', 'full_name_en', 'opinion_uz', 'opinion_ru', 'opinion_en']
 
 
 class FAQAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+    question_uz = serializers.CharField(max_length=500)
+    question_ru = serializers.CharField(max_length=500)
+    question_en = serializers.CharField(max_length=500)
 
-        self.fields['question'] = serializers.CharField(source=f'question_{language}')
-        self.fields['answer'] = serializers.CharField(source=f'answer_{language}')
+    answer_uz = serializers.CharField(max_length=1000)
+    answer_ru = serializers.CharField(max_length=1000)
+    answer_en = serializers.CharField(max_length=1000)
 
     class Meta:
         model = FAQ
-        fields = ['id', 'question', 'answer', 'is_published']
+        fields = ['id', 'question', 'answer', 'is_published', 'question_uz', 'question_ru', 'question_en', 'answer_uz',
+                  'answer_ru', 'answer_en']
 
 
 class AboutUsAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+    about_us_uz = RichTextField()
+    about_us_ru = RichTextField()
+    about_us_en = RichTextField()
 
-        self.fields['about_us'] = serializers.CharField(source=f'about_us_{language}')
-        self.fields['our_goal'] = serializers.CharField(source=f'our_goal_{language}')
+    our_goal_uz = serializers.CharField(max_length=500)
+    our_goal_ru = serializers.CharField(max_length=500)
+    our_goal_en = serializers.CharField(max_length=500)
 
     class Meta:
         model = AboutUs
-        field = ['id', "about_us", 'our_goal', 'image']
+        field = ['id', "about_us", 'our_goal', 'image', 'about_us_uz', 'about_us_ru', 'about_us_en', 'our_goal_uz',
+                 'our_goal_ru', 'our_goal_en']
 
 
 class InfoAdminSerializer(serializers.ModelSerializer):
@@ -118,110 +120,85 @@ class InfoAdminSerializer(serializers.ModelSerializer):
 
 
 class OfficeAddressAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
-
-        self.fields['address_name'] = serializers.CharField(source=f'address_name_{language}')
+    address_name_uz = serializers.CharField(max_length=250)
+    address_name_ru = serializers.CharField(max_length=250)
+    address_name_en = serializers.CharField(max_length=250)
 
     class Meta:
         model = OfficeAddress
-        fields = ['id', 'info', 'address_name', 'latitude', 'longitude', 'phone']
+        fields = ['id', 'info', 'address_name', 'latitude', 'longitude', 'phone', 'address_name_uz', 'address_name_ru',
+                  'address_name_en']
 
 
 class ServicesAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+    name_uz = serializers.CharField(max_length=150)
+    name_ru = serializers.CharField(max_length=150)
+    name_en = serializers.CharField(max_length=150)
 
-        self.fields['name'] = serializers.CharField(source=f'name_{language}')
-        self.fields['content'] = serializers.CharField(source=f'content_{language}')
+    content_uz = RichTextField()
+    content_ru = RichTextField()
+    content_en = RichTextField()
 
     class Meta:
         model = Services
-        fields = ['id', 'category', 'image', 'name', 'content']
+        fields = ['id', 'category', 'image', 'name', 'content', 'name_uz', 'name_ru', 'name_en', 'content_uz',
+                  'content_ru', 'content_en']
 
 
 class ServicesCategoryAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
-
-        self.fields['name'] = serializers.CharField(source=f'name_{language}')
+    name_uz = serializers.CharField(max_length=150)
+    name_ru = serializers.CharField(max_length=150)
+    name_en = serializers.CharField(max_length=150)
 
     class Meta:
         model = ServicesCategory
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'name_uz', 'name_ru', 'name_en']
 
 
 class AdditionalLinksAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
-
-        self.fields['name'] = serializers.CharField(source=f'name_{language}')
+    name_uz = serializers.CharField(max_length=150)
+    name_ru = serializers.CharField(max_length=150)
+    name_en = serializers.CharField(max_length=150)
 
     class Meta:
         model = AdditionalLinks
-        fields = ['id', 'name', 'url', 'is_published']
+        fields = ['id', 'name', 'url', 'is_published', 'name_uz', 'name_ru', 'name_en']
 
 
 class PartnersAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+    full_name_uz = serializers.CharField(max_length=150)
+    full_name_ru = serializers.CharField(max_length=150)
+    full_name_en = serializers.CharField(max_length=150)
 
-        self.fields['full_name'] = serializers.CharField(source=f'full_name_{language}')
-        self.fields['position'] = serializers.CharField(source=f'position_{language}')
+    position_uz = serializers.CharField(max_length=255)
+    position_ru = serializers.CharField(max_length=255)
+    position_en = serializers.CharField(max_length=255)
 
     class Meta:
         model = Partners
-        fields = ['id', 'full_name', 'image', 'position', 'category']
+        fields = ['id', 'full_name', 'image', 'position', 'category', 'full_name_uz', 'full_name_ru', 'full_name_en',
+                  'position_uz', 'position_ru', 'position_en']
 
 
 class DocumentCategoryAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
-
-        self.fields['category_name'] = serializers.CharField(source=f'category_name_{language}')
+    category_name_uz = serializers.CharField(max_length=150)
+    category_name_ru = serializers.CharField(max_length=150)
+    category_name_en = serializers.CharField(max_length=150)
 
     class Meta:
         model = DocumentCategory
-        fields = ['id', 'category_name', 'is_active']
+        fields = ['id', 'category_name', 'is_active', 'category_name_uz', 'category_name_ru', 'category_name_en']
 
 
 class DocumentTypeAdminSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
-
-        self.fields['document_name'] = serializers.CharField(source=f'document_name_{language}')
+    document_name_uz = serializers.CharField(max_length=150)
+    document_name_ru = serializers.CharField(max_length=150)
+    document_name_en = serializers.CharField(max_length=150)
 
     class Meta:
         model = DocumentType
-        fields = ['id', 'document_name', 'document_category', 'price', 'is_active']
+        fields = ['id', 'document_name', 'document_category', 'price', 'is_active', 'document_name_uz',
+                  'document_name_ru', 'document_name_en']
 
 
 class DocumentOrderAdminSerializer(serializers.ModelSerializer):
