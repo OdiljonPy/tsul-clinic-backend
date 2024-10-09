@@ -37,7 +37,6 @@ INSTALLED_APPS = [
 
     'serviceses',
     'base',
-    'dashboard',
 ]
 
 MIDDLEWARE = [

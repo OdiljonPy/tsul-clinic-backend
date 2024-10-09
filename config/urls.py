@@ -29,7 +29,6 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('api/v1/', include('serviceses.urls')),
     path('api/v1/', include('base.urls')),
-    path('dashboard/', include('dashboard.urls')),
 
     re_path(r'static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     re_path(r'media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
