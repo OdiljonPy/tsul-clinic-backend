@@ -7,64 +7,69 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from exceptions.exception import CustomApiException
 from exceptions.error_messages import ErrorCodes
-
-BannerSerializer = ...
-NewsSerializer = ...
-TeamSerializer = ...
-StatisticsSerializer = ...
-CustomerOpinionSerializer = ...
-FAQSerializer = ...
-AboutUsSerializer = ...
-InfoSerializer = ...
-OfficeAddressSerializer = ...
-ServicesCategorySerializer = ...
-ServicesSerializer = ...
-AdditionalLinksSerializer = ...
-PartnersSerializer = ...
-DocumentCategorySerializer = ...
-DocumentTypeSerializer = ...
-DocumentOrderSerializer = ...
-ReadyDocumentsSerializer = ...
-MeetingOrderSerializer = ...
-ContactsSerializer = ...
+from .serializers import (
+    BannerAdminSerializer, NewsAdminSerializer, TeamAdminSerializer, StatisticsAdminSerializer,
+    CustomerOpinionAdminSerializer, FAQAdminSerializer, AboutUsAdminSerializer, InfoAdminSerializer,
+    OfficeAddressAdminSerializer, ServicesCategoryAdminSerializer, ServicesAdminSerializer,
+    AdditionalLinksAdminSerializer, PartnersAdminSerializer, DocumentCategoryAdminSerializer,
+    DocumentTypeAdminSerializer, DocumentOrderAdminSerializer, ReadyDocumentsAdminSerializer,
+    MeetingOrderAdminSerializer, ContactsAdminSerializer
+)
 
 
 class BannerViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=BannerAdminSerializer(),
+        responses={201: BannerAdminSerializer()},
+        tags=['Dashboard-Banner']
+    )
     def create_banner(self, request):
         data = request.data
-        serializer = BannerSerializer(data=data)
+        serializer = BannerAdminSerializer(data=data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: BannerAdminSerializer()},
+        tags=['Dashboard-Banner']
+    )
     def list_banners(self, request):
         banners = base_models.Banner.objects.all()
-        serializer = BannerSerializer(banners, many=True)
+        serializer = BannerAdminSerializer(banners, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: BannerAdminSerializer()},
+        tags=['Dashboard-Banner']
+    )
     def retrieve_banner(self, request, pk):
         banner = base_models.Banner.objects.filter(id=pk).first()
         if not banner:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = BannerSerializer(banner)
+        serializer = BannerAdminSerializer(banner)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=BannerAdminSerializer(),
+        responses={200: BannerAdminSerializer()},
+        tags=['Dashboard-Banner']
+    )
     def update_banner(self, request, pk):
         banner = base_models.Banner.objects.filter(id=pk).first()
         if not banner:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = BannerSerializer(banner, data=request.data, partial=True)
+        serializer = BannerAdminSerializer(banner, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: BannerAdminSerializer()},
+        tags=['Dashboard-Banner']
+    )
     def delete_banner(self, request, pk):
         banner = base_models.Banner.objects.filter(id=pk).first()
         if not banner:
@@ -74,40 +79,57 @@ class BannerViewSet(ViewSet):
 
 
 class NewsViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=NewsAdminSerializer(),
+        responses={201: NewsAdminSerializer()},
+        tags=['Dashboard-News']
+    )
     def create_news(self, request):
-        serializer = NewsSerializer(data=request.data)
+        serializer = NewsAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: NewsAdminSerializer()},
+        tags=['Dashboard-News']
+    )
     def list_news(self, request):
         news = base_models.News.objects.all()
-        serializer = NewsSerializer(news, many=True)
+        serializer = NewsAdminSerializer(news, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: NewsAdminSerializer()},
+        tags=['Dashboard-News']
+    )
     def retrieve_news(self, request, pk):
         news = base_models.News.objects.filter(id=pk).first()
         if not news:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = NewsSerializer(news)
+        serializer = NewsAdminSerializer(news)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=NewsAdminSerializer(),
+        responses={200: NewsAdminSerializer()},
+        tags=['Dashboard-News']
+    )
     def update_news(self, request, pk):
         news = base_models.News.objects.filter(id=pk).first()
         if not news:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = NewsSerializer(news, data=request.data, partial=True)
+        serializer = NewsAdminSerializer(news, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: NewsAdminSerializer()},
+        tags=['Dashboard-News']
+    )
     def delete_news(self, request, pk):
         news = base_models.News.objects.filter(id=pk).first()
         if not news:
@@ -117,40 +139,57 @@ class NewsViewSet(ViewSet):
 
 
 class TeamViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=TeamAdminSerializer(),
+        responses={201: TeamAdminSerializer()},
+        tags=['Dashboard-Team']
+    )
     def create_team(self, request):
-        serializer = TeamSerializer(data=request.data)
+        serializer = TeamAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: TeamAdminSerializer()},
+        tags=['Dashboard-Team']
+    )
     def list_teams(self, request):
         teams = base_models.Team.objects.all()
-        serializer = TeamSerializer(teams, many=True)
+        serializer = TeamAdminSerializer(teams, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: TeamAdminSerializer()},
+        tags=['Dashboard-Team']
+    )
     def retrieve_team(self, request, pk):
         team = base_models.Team.objects.filter(id=pk).first()
         if not team:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = TeamSerializer(team)
+        serializer = TeamAdminSerializer(team)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=TeamAdminSerializer(),
+        responses={200: TeamAdminSerializer()},
+        tags=['Dashboard-Team']
+    )
     def update_team(self, request, pk):
         team = base_models.Team.objects.filter(id=pk).first()
         if not team:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = TeamSerializer(team, data=request.data, partial=True)
+        serializer = TeamAdminSerializer(team, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: TeamAdminSerializer()},
+        tags=['Dashboard-Team']
+    )
     def delete_team(self, request, pk):
         team = base_models.Team.objects.filter(id=pk).first()
         if not team:
@@ -160,40 +199,57 @@ class TeamViewSet(ViewSet):
 
 
 class StatisticsViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=StatisticsAdminSerializer(),
+        responses={201: StatisticsAdminSerializer()},
+        tags=['Dashboard-Statistics']
+    )
     def create_statistics(self, request):
-        serializer = StatisticsSerializer(data=request.data)
+        serializer = StatisticsAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: StatisticsAdminSerializer()},
+        tags=['Dashboard-Statistics']
+    )
     def list_statistics(self, request):
         statistics = base_models.Statistics.objects.all()
-        serializer = StatisticsSerializer(statistics, many=True)
+        serializer = StatisticsAdminSerializer(statistics, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: StatisticsAdminSerializer()},
+        tags=['Dashboard-Statistics']
+    )
     def retrieve_statistics(self, request, pk):
         statistics = base_models.Statistics.objects.filter(id=pk).first()
         if not statistics:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = StatisticsSerializer(statistics)
+        serializer = StatisticsAdminSerializer(statistics)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=StatisticsAdminSerializer(),
+        responses={200: StatisticsAdminSerializer()},
+        tags=['Dashboard-Statistics']
+    )
     def update_statistics(self, request, pk):
         statistics = base_models.Statistics.objects.filter(id=pk).first()
         if not statistics:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = StatisticsSerializer(statistics, data=request.data, partial=True)
+        serializer = StatisticsAdminSerializer(statistics, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: StatisticsAdminSerializer()},
+        tags=['Dashboard-Statistics']
+    )
     def delete_statistics(self, request, pk):
         statistics = base_models.Statistics.objects.filter(id=pk).first()
         if not statistics:
@@ -203,40 +259,57 @@ class StatisticsViewSet(ViewSet):
 
 
 class CustomerOpinionViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=CustomerOpinionAdminSerializer(),
+        responses={201: CustomerOpinionAdminSerializer()},
+        tags=['Dashboard-CustomerOpinion']
+    )
     def create_customer_opinion(self, request):
-        serializer = CustomerOpinionSerializer(data=request.data)
+        serializer = CustomerOpinionAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: CustomerOpinionAdminSerializer()},
+        tags=['Dashboard-CustomerOpinion']
+    )
     def list_customer_opinion(self, request):
         customer_opinions = base_models.CustomerOpinion.objects.all()
-        serializer = CustomerOpinionSerializer(customer_opinions, many=True)
+        serializer = CustomerOpinionAdminSerializer(customer_opinions, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: CustomerOpinionAdminSerializer()},
+        tags=['Dashboard-CustomerOpinion']
+    )
     def retrieve_customer_opinion(self, request, pk):
         customer_opinion = base_models.CustomerOpinion.objects.filter(id=pk).first()
         if not customer_opinion:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = CustomerOpinionSerializer(customer_opinion)
+        serializer = CustomerOpinionAdminSerializer(customer_opinion)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=CustomerOpinionAdminSerializer(),
+        responses={200: CustomerOpinionAdminSerializer()},
+        tags=['Dashboard-CustomerOpinion']
+    )
     def update_customer_opinion(self, request, pk):
         customer_opinion = base_models.CustomerOpinion.objects.filter(id=pk).first()
         if not customer_opinion:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = CustomerOpinionSerializer(customer_opinion, data=request.data, partial=True)
+        serializer = CustomerOpinionAdminSerializer(customer_opinion, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: CustomerOpinionAdminSerializer()},
+        tags=['Dashboard-CustomerOpinion']
+    )
     def delete_customer_opinion(self, request, pk):
         customer_opinion = base_models.CustomerOpinion.objects.filter(id=pk).first()
         if not customer_opinion:
@@ -246,40 +319,57 @@ class CustomerOpinionViewSet(ViewSet):
 
 
 class FAQViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=FAQAdminSerializer(),
+        responses={201: FAQAdminSerializer()},
+        tags=['Dashboard-FAQ']
+    )
     def create_faq(self, request):
-        serializer = FAQSerializer(data=request.data)
+        serializer = FAQAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: FAQAdminSerializer()},
+        tags=['Dashboard-FAQ']
+    )
     def list_faq(self, request):
         faqs = base_models.FAQ.objects.all()
-        serializer = FAQSerializer(faqs, many=True)
+        serializer = FAQAdminSerializer(faqs, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: FAQAdminSerializer()},
+        tags=['Dashboard-FAQ']
+    )
     def retrieve_faq(self, request, pk):
         faq = base_models.FAQ.objects.filter(id=pk).first()
         if not faq:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = FAQSerializer(faq)
+        serializer = FAQAdminSerializer(faq)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=FAQAdminSerializer(),
+        responses={200: FAQAdminSerializer()},
+        tags=['Dashboard-FAQ']
+    )
     def update_faq(self, request, pk):
         faq = base_models.FAQ.objects.filter(id=pk).first()
         if not faq:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = FAQSerializer(faq, data=request.data, partial=True)
+        serializer = FAQAdminSerializer(faq, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: FAQAdminSerializer()},
+        tags=['Dashboard-FAQ']
+    )
     def delete_faq(self, request, pk):
         faq = base_models.FAQ.objects.filter(id=pk).first()
         if not faq:
@@ -289,40 +379,57 @@ class FAQViewSet(ViewSet):
 
 
 class AboutUsViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=AboutUsAdminSerializer(),
+        responses={200: AboutUsAdminSerializer()},
+        tags=['Dashboard-AboutUs']
+    )
     def create_about_us(self, request):
-        serializer = AboutUsSerializer(data=request.data)
+        serializer = AboutUsAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: AboutUsAdminSerializer()},
+        tags=['Dashboard-AboutUs']
+    )
     def list_about_us(self, request):
         about_us = base_models.AboutUs.objects.all()
-        serializer = AboutUsSerializer(about_us, many=True)
+        serializer = AboutUsAdminSerializer(about_us, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: AboutUsAdminSerializer()},
+        tags=['Dashboard-AboutUs']
+    )
     def retrieve_about_us(self, request, pk):
         about_us = base_models.AboutUs.objects.filter(id=pk).first()
         if not about_us:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = AboutUsSerializer(about_us)
+        serializer = AboutUsAdminSerializer(about_us)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=AboutUsAdminSerializer(),
+        responses={200: AboutUsAdminSerializer()},
+        tags=['Dashboard-AboutUs']
+    )
     def update_about_us(self, request, pk):
         about_us = base_models.AboutUs.objects.filter(id=pk).first()
         if not about_us:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = AboutUsSerializer(about_us, data=request.data, partial=True)
+        serializer = AboutUsAdminSerializer(about_us, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: AboutUsAdminSerializer()},
+        tags=['Dashboard-AboutUs']
+    )
     def delete_about_us(self, request, pk):
         about_us = base_models.AboutUs.objects.filter(id=pk).first()
         if not about_us:
@@ -332,40 +439,57 @@ class AboutUsViewSet(ViewSet):
 
 
 class InfoViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=InfoAdminSerializer(),
+        responses={200: InfoAdminSerializer()},
+        tags=['Dashboard-Info']
+    )
     def create_info(self, request):
-        serializer = InfoSerializer(data=request.data)
+        serializer = InfoAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: InfoAdminSerializer()},
+        tags=['Dashboard-Info']
+    )
     def list_info(self, request):
         info = base_models.Info.objects.all()
-        serializer = InfoSerializer(info, many=True)
+        serializer = InfoAdminSerializer(info, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: InfoAdminSerializer()},
+        tags=['Dashboard-Info']
+    )
     def retrieve_info(self, request, pk):
         info = base_models.Info.objects.filter(id=pk).first()
         if not info:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = InfoSerializer(info)
+        serializer = InfoAdminSerializer(info)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=InfoAdminSerializer(),
+        responses={200: InfoAdminSerializer()},
+        tags=['Dashboard-Info']
+    )
     def update_info(self, request, pk):
         info = base_models.Info.objects.filter(id=pk).first()
         if not info:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = InfoSerializer(info, data=request.data, partial=True)
+        serializer = InfoAdminSerializer(info, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: InfoAdminSerializer()},
+        tags=['Dashboard-Info']
+    )
     def delete_info(self, request, pk):
         info = base_models.Info.objects.filter(id=pk).first()
         if not info:
@@ -375,41 +499,57 @@ class InfoViewSet(ViewSet):
 
 
 class OfficeAddressViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=OfficeAddressAdminSerializer(),
+        responses={200: OfficeAddressAdminSerializer()},
+        tags=['Dashboard-OfficeAddresses']
+    )
     def create_office_address(self, request):
-        from base.serializers import OfficeAddressSerializer
-        serializer = OfficeAddressSerializer(data=request.data)
+        serializer = OfficeAddressAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: OfficeAddressAdminSerializer()},
+        tags=['Dashboard-OfficeAddresses']
+    )
     def list_office_addresses(self, request):
         office_addresses = base_models.OfficeAddress.objects.all()
-        serializer = OfficeAddressSerializer(office_addresses, many=True)
+        serializer = OfficeAddressAdminSerializer(office_addresses, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: OfficeAddressAdminSerializer()},
+        tags=['Dashboard-OfficeAddresses']
+    )
     def retrieve_office_address(self, request, pk):
         office_address = base_models.OfficeAddress.objects.filter(id=pk).first()
         if not office_address:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = OfficeAddressSerializer(office_address)
+        serializer = OfficeAddressAdminSerializer(office_address)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=OfficeAddressAdminSerializer(),
+        responses={200: OfficeAddressAdminSerializer()},
+        tags=['Dashboard-OfficeAddress']
+    )
     def update_office_address(self, request, pk):
         office_address = base_models.OfficeAddress.objects.filter(id=pk).first()
         if not office_address:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = OfficeAddressSerializer(office_address, data=request.data, partial=True)
+        serializer = OfficeAddressAdminSerializer(office_address, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: OfficeAddressAdminSerializer()},
+        tags=['Dashboard-OfficeAddress']
+    )
     def delete_office_address(self, request, pk):
         office_address = base_models.OfficeAddress.objects.filter(id=pk).first()
         if not office_address:
@@ -419,40 +559,57 @@ class OfficeAddressViewSet(ViewSet):
 
 
 class ServicesCategoryViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ServicesCategoryAdminSerializer(),
+        responses={200: ServicesCategoryAdminSerializer()},
+        tags=['Dashboard-ServicesCategories']
+    )
     def create_service_category(self, request):
-        serializer = ServicesCategorySerializer(data=request.data)
+        serializer = ServicesCategoryAdminSerializer(data=request.data)
         if serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ServicesCategoryAdminSerializer()},
+        tags=['Dashboard-ServicesCategories']
+    )
     def list_service_categories(self, request):
         service_categories = base_models.ServicesCategory.objects.all()
-        serializer = ServicesCategorySerializer(service_categories, many=True)
+        serializer = ServicesCategoryAdminSerializer(service_categories, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses=ServicesCategoryAdminSerializer(),
+        tags=['Dashboard-ServicesCategories']
+    )
     def retrieve_service_category(self, request, pk):
         service_category = base_models.ServicesCategory.objects.filter(id=pk).first()
         if not service_category:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = ServicesCategorySerializer(service_category)
+        serializer = ServicesCategoryAdminSerializer(service_category)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ServicesCategoryAdminSerializer(),
+        responses={200: ServicesCategoryAdminSerializer()},
+        tags=['Dashboard-ServicesCategories']
+    )
     def update_service_category(self, request, pk):
         service_category = base_models.ServicesCategory.objects.filter(id=pk).first()
         if not service_category:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = ServicesCategorySerializer(service_category, data=request.data, partial=True)
+        serializer = ServicesCategoryAdminSerializer(service_category, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ServicesCategoryAdminSerializer()},
+        tags=['Dashboard-ServicesCategories']
+    )
     def delete_service_category(self, request, pk):
         service_category = base_models.ServicesCategory.objects.filter(id=pk).first()
         if not service_category:
@@ -462,40 +619,57 @@ class ServicesCategoryViewSet(ViewSet):
 
 
 class ServicesViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ServicesAdminSerializer(),
+        responses={200: ServicesAdminSerializer()},
+        tags=['Dashboard-Services']
+    )
     def create_service(self, request):
-        serializer = ServicesSerializer(data=request.data)
+        serializer = ServicesAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ServicesAdminSerializer()},
+        tags=['Dashboard-Services']
+    )
     def list_services(self, request):
         services = base_models.Services.objects.all()
-        serializer = ServicesSerializer(services, many=True)
+        serializer = ServicesAdminSerializer(services, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ServicesAdminSerializer()},
+        tags=['Dashboard-Services']
+    )
     def retrieve_service(self, request, pk):
         service = base_models.Services.objects.filter(id=pk).first()
         if not service:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = ServicesSerializer(service)
+        serializer = ServicesAdminSerializer(service)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ServicesAdminSerializer(),
+        responses={200: ServicesAdminSerializer()},
+        tags=['Dashboard-Services']
+    )
     def update_service(self, request, pk):
         service = base_models.Services.objects.filter(id=pk).first()
         if not service:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = ServicesSerializer(service, data=request.data, partial=True)
+        serializer = ServicesAdminSerializer(service, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ServicesAdminSerializer()},
+        tags=['Dashboard-Services']
+    )
     def delete_service(self, request, pk):
         service = base_models.Services.objects.filter(id=pk).first()
         if not service:
@@ -504,40 +678,57 @@ class ServicesViewSet(ViewSet):
 
 
 class AdditionalLinksViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=AdditionalLinksAdminSerializer(),
+        responses={201: AdditionalLinksAdminSerializer()},
+        tags=['Dashboard-AdditionalLinks']
+    )
     def create_additional_links(self, request):
-        serializer = AdditionalLinksSerializer(data=request.data)
+        serializer = AdditionalLinksAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: AdditionalLinksAdminSerializer()},
+        tags=['Dashboard-AdditionalLinks']
+    )
     def list_additional_links(self, request):
         additional_links = base_models.AdditionalLinks.objects.all()
-        serializer = AdditionalLinksSerializer(additional_links, many=True)
+        serializer = AdditionalLinksAdminSerializer(additional_links, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: AdditionalLinksAdminSerializer()},
+        tags=['Dashboard-AdditionalLinks']
+    )
     def retrieve_additional_link(self, request, pk):
         additional_link = base_models.AdditionalLinks.objects.filter(id=pk).first()
         if not additional_link:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = AdditionalLinksSerializer(additional_link)
+        serializer = AdditionalLinksAdminSerializer(additional_link)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=AdditionalLinksAdminSerializer(),
+        responses={200: AdditionalLinksAdminSerializer()},
+        tags=['Dashboard-AdditionalLinks']
+    )
     def update_additional_link(self, request, pk):
         additional_link = base_models.AdditionalLinks.objects.filter(id=pk).first()
         if not additional_link:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = AdditionalLinksSerializer(additional_link, data=request.data, partial=True)
+        serializer = AdditionalLinksAdminSerializer(additional_link, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: AdditionalLinksAdminSerializer()},
+        tags=['Dashboard-AdditionalLinks']
+    )
     def delete_additional_link(self, request, pk):
         additional_link = base_models.AdditionalLinks.objects.filter(id=pk).first()
         if not additional_link:
@@ -547,40 +738,57 @@ class AdditionalLinksViewSet(ViewSet):
 
 
 class PartnersViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=PartnersAdminSerializer(),
+        responses={201: PartnersAdminSerializer()},
+        tags=['Dashboard-Partners']
+    )
     def create_partner(self, request):
-        serializer = PartnersSerializer(data=request.data)
+        serializer = PartnersAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: PartnersAdminSerializer()},
+        tags=['Dashboard-Partners']
+    )
     def list_partners(self, request):
         partners = base_models.Partners.objects.all()
-        serializer = PartnersSerializer(partners, many=True)
+        serializer = PartnersAdminSerializer(partners, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: PartnersAdminSerializer()},
+        tags=['Dashboard-Partners']
+    )
     def retrieve_partner(self, request, pk):
         partner = base_models.Partners.objects.filter(id=pk).first()
         if not partner:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = PartnersSerializer(partner)
+        serializer = PartnersAdminSerializer(partner)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=PartnersAdminSerializer(),
+        responses={200: PartnersAdminSerializer()},
+        tags=['Dashboard-Partners']
+    )
     def update_partner(self, request, pk):
         partner = base_models.Partners.objects.filter(id=pk).first()
         if not partner:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = PartnersSerializer(partner, data=request.data, partial=True)
+        serializer = PartnersAdminSerializer(partner, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: PartnersAdminSerializer()},
+        tags=['Dashboard-Partners']
+    )
     def delete_partner(self, request, pk):
         partner = base_models.Partners.objects.filter(id=pk).first()
         if not partner:
@@ -590,40 +798,57 @@ class PartnersViewSet(ViewSet):
 
 
 class DocumentCategoryViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=DocumentCategoryAdminSerializer(),
+        responses={201: DocumentCategoryAdminSerializer()},
+        tags=['Dashboard-DocumentCategory']
+    )
     def create_document_category(self, request):
-        serializer = DocumentCategorySerializer(data=request.data)
+        serializer = DocumentCategoryAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentCategoryAdminSerializer()},
+        tags=['Dashboard-DocumentCategory']
+    )
     def list_document_category(self, request):
         document_categories = services_models.DocumentCategory.objects.all()
-        serializer = DocumentCategorySerializer(document_categories, many=True)
+        serializer = DocumentCategoryAdminSerializer(document_categories, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentCategoryAdminSerializer()},
+        tags=['Dashboard-DocumentCategory']
+    )
     def retrieve_document_category(self, request, pk):
         document_category = services_models.DocumentCategory.objects.filter(id=pk).first()
         if not document_category:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = DocumentCategorySerializer(document_category)
+        serializer = DocumentCategoryAdminSerializer(document_category)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=DocumentCategoryAdminSerializer(),
+        responses={200: DocumentCategoryAdminSerializer()},
+        tags=['Dashboard-DocumentCategory']
+    )
     def update_document_category(self, request, pk):
         document_category = services_models.DocumentCategory.objects.filter(id=pk).first()
         if not document_category:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = DocumentCategorySerializer(document_category, data=request.data, partial=True)
+        serializer = DocumentCategoryAdminSerializer(document_category, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentCategoryAdminSerializer()},
+        tags=['Dashboard-DocumentCategory']
+    )
     def delete_document_category(self, request, pk):
         document_category = services_models.DocumentCategory.objects.filter(id=pk).first()
         if not document_category:
@@ -634,40 +859,57 @@ class DocumentCategoryViewSet(ViewSet):
 
 
 class DocumentTypeViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=DocumentTypeAdminSerializer(),
+        responses={201: DocumentTypeAdminSerializer()},
+        tags=['Dashboard-DocumentType']
+    )
     def create_document_type(self, request):
-        serializer = DocumentTypeSerializer(data=request.data)
+        serializer = DocumentTypeAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentTypeAdminSerializer()},
+        tags=['Dashboard-DocumentType']
+    )
     def list_document_type(self, request):
         document_types = services_models.DocumentType.objects.all()
-        serializer = DocumentTypeSerializer(document_types, many=True)
+        serializer = DocumentTypeAdminSerializer(document_types, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentTypeAdminSerializer()},
+        tags=['Dashboard-DocumentType']
+    )
     def retrieve_document_type(self, request, pk):
         document_type = services_models.DocumentType.objects.filter(id=pk).first()
         if not document_type:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = DocumentTypeSerializer(document_type)
+        serializer = DocumentTypeAdminSerializer(document_type)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=DocumentTypeAdminSerializer(),
+        responses={200: DocumentTypeAdminSerializer()},
+        tags=['Dashboard-DocumentType']
+    )
     def update_document_type(self, request, pk):
         document_type = services_models.DocumentType.objects.filter(id=pk).first()
         if not document_type:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = DocumentTypeSerializer(document_type, data=request.data, partial=True)
+        serializer = DocumentTypeAdminSerializer(document_type, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentTypeAdminSerializer()},
+        tags=['Dashboard-DocumentType']
+    )
     def delete_document_type(self, request, pk):
         document_type = services_models.DocumentType.objects.filter(id=pk).first()
         if not document_type:
@@ -677,40 +919,56 @@ class DocumentTypeViewSet(ViewSet):
 
 
 class DocumentOrderViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=DocumentOrderAdminSerializer(),
+        responses={201: DocumentOrderAdminSerializer()},
+        tags=['Dashboard-DocumentOrder']
+    )
     def create_document_order(self, request):
-        serializer = DocumentOrderSerializer(data=request.data)
+        serializer = DocumentOrderAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentOrderAdminSerializer()},
+        tags=['Dashboard-DocumentOrder']
+    )
     def list_document_order(self, request):
         document_orders = services_models.DocumentOrder.objects.all()
-        serializer = DocumentOrderSerializer(document_orders, many=True)
+        serializer = DocumentOrderAdminSerializer(document_orders, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentOrderAdminSerializer()},
+        tags=['Dashboard-DocumentOrder']
+    )
     def retrieve_document_order(self, request, pk):
         document_order = services_models.DocumentOrder.objects.filter(id=pk).first()
         if not document_order:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = DocumentOrderSerializer(document_order)
+        serializer = DocumentOrderAdminSerializer(document_order)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=DocumentOrderAdminSerializer(),
+        responses={200: DocumentOrderAdminSerializer()},
+    )
     def update_document_order(self, request, pk):
         document_order = services_models.DocumentOrder.objects.filter(id=pk).first()
         if not document_order:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = DocumentOrderSerializer(document_order, data=request.data, partial=True)
+        serializer = DocumentOrderAdminSerializer(document_order, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: DocumentOrderAdminSerializer()},
+        tags=['Dashboard-DocumentOrder']
+    )
     def delete_document_order(self, request, pk):
         document_order = services_models.DocumentOrder.objects.filter(id=pk).first()
         if not document_order:
@@ -720,40 +978,57 @@ class DocumentOrderViewSet(ViewSet):
 
 
 class ReadyDocumentsViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ReadyDocumentsAdminSerializer(),
+        responses={201: ReadyDocumentsAdminSerializer()},
+        tags=['Dashboard-ReadyDocuments']
+    )
     def create_ready_document(self, request):
-        serializer = ReadyDocumentsSerializer(data=request.data)
+        serializer = ReadyDocumentsAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ReadyDocumentsAdminSerializer()},
+        tags=['Dashboard-ReadyDocuments']
+    )
     def list_ready_document(self, request):
         ready_documents = services_models.ReadyDocuments.objects.all()
-        serializer = ReadyDocumentsSerializer(ready_documents, many=True)
+        serializer = ReadyDocumentsAdminSerializer(ready_documents, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ReadyDocumentsAdminSerializer()},
+        tags=['Dashboard-ReadyDocuments']
+    )
     def retrieve_ready_document(self, request, pk):
         ready_document = services_models.ReadyDocuments.objects.filter(id=pk).first()
         if not ready_document:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = ReadyDocumentsSerializer(ready_document)
+        serializer = ReadyDocumentsAdminSerializer(ready_document)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ReadyDocumentsAdminSerializer(),
+        responses={200: ReadyDocumentsAdminSerializer()},
+        tags=['Dashboard-ReadyDocuments']
+    )
     def update_ready_document(self, request, pk):
         ready_document = services_models.ReadyDocuments.objects.filter(id=pk).first()
         if not ready_document:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = ReadyDocumentsSerializer(ready_document, data=request.data, partial=True)
+        serializer = ReadyDocumentsAdminSerializer(ready_document, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ReadyDocumentsAdminSerializer()},
+        tags=['Dashboard-ReadyDocuments']
+    )
     def delete_ready_document(self, request, pk):
         ready_document = services_models.ReadyDocuments.objects.filter(id=pk).first()
         if not ready_document:
@@ -763,40 +1038,57 @@ class ReadyDocumentsViewSet(ViewSet):
 
 
 class MeetingOrderViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=MeetingOrderAdminSerializer(),
+        responses={201: MeetingOrderAdminSerializer()},
+        tags=['Dashboard-MeetingOrder']
+    )
     def create_meeting_order(self, request):
-        serializer = MeetingOrderSerializer(data=request.data)
+        serializer = MeetingOrderAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: MeetingOrderAdminSerializer()},
+        tags=['Dashboard-MeetingOrder']
+    )
     def list_meeting_order(self, request):
         meeting_orders = services_models.MeetingOrder.objects.all()
-        serializer = MeetingOrderSerializer(meeting_orders, many=True)
+        serializer = MeetingOrderAdminSerializer(meeting_orders, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: MeetingOrderAdminSerializer()},
+        tags=['Dashboard-MeetingOrder']
+    )
     def retrieve_meeting_order(self, request, pk):
         meeting_order = services_models.MeetingOrder.objects.filter(id=pk).first()
         if not meeting_order:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = MeetingOrderSerializer(meeting_order)
+        serializer = MeetingOrderAdminSerializer(meeting_order)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=MeetingOrderAdminSerializer(),
+        responses={200: MeetingOrderAdminSerializer()},
+        tags=['Dashboard-MeetingOrder']
+    )
     def update_meeting_order(self, request, pk):
         meeting_order = services_models.MeetingOrder.objects.filter(id=pk).first()
         if not meeting_order:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = MeetingOrderSerializer(meeting_order, data=request.data, partial=True)
+        serializer = MeetingOrderAdminSerializer(meeting_order, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: MeetingOrderAdminSerializer()},
+        tags=['Dashboard-MeetingOrder']
+    )
     def delete_meeting_order(self, request, pk):
         meeting_order = services_models.MeetingOrder.objects.filter(id=pk).first()
         if not meeting_order:
@@ -806,40 +1098,57 @@ class MeetingOrderViewSet(ViewSet):
 
 
 class ContactsViewSet(ViewSet):
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ContactsAdminSerializer(),
+        responses={201: ContactsAdminSerializer()},
+        tags=['Dashboard-Contacts']
+    )
     def create_contacts(self, request):
-        serializer = ContactsSerializer(data=request.data)
+        serializer = ContactsAdminSerializer(data=request.data)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ContactsAdminSerializer()},
+        tags=['Dashboard-Contacts']
+    )
     def list_contacts(self, request):
         contacts = services_models.Contacts.objects.all()
-        serializer = ContactsSerializer(contacts, many=True)
+        serializer = ContactsAdminSerializer(contacts, many=True)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ContactsAdminSerializer()},
+        tags=['Dashboard-Contacts']
+    )
     def retrieve_contacts(self, request, pk):
         contacts = services_models.Contacts.objects.filter(id=pk).first()
         if not contacts:
             raise CustomApiException(ErrorCodes.NOT_FOUND)
-        serializer = ContactsSerializer(contacts)
+        serializer = ContactsAdminSerializer(contacts)
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        request_body=ContactsAdminSerializer(),
+        responses={200: ContactsAdminSerializer()},
+        tags=['Dashboard-Contacts']
+    )
     def update_contacts(self, request, pk):
         contacts = services_models.Contacts.objects.filter(id=pk).first()
         if not contacts:
             raise CustomApiException(ErrorCodes.INVALID_INPUT)
-        serializer = ContactsSerializer(contacts, data=request.data, partial=True)
+        serializer = ContactsAdminSerializer(contacts, data=request.data, partial=True)
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        responses={200: ContactsAdminSerializer()},
+        tags=['Dashboard-Contacts']
+    )
     def delete_contacts(self, request, pk):
         contacts = services_models.Contacts.objects.filter(id=pk).first()
         if not contacts:
