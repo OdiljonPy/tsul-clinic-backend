@@ -156,6 +156,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'dashboard.CustomerUser'
+
 CKEDITOR_UPLOAD_PATH = 'media/'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 10
 

@@ -7,6 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from exceptions.exception import CustomApiException
 from exceptions.error_messages import ErrorCodes
+from .models import CustomerUser
 from .serializers import (
     BannerAdminSerializer, NewsAdminSerializer, TeamAdminSerializer, StatisticsAdminSerializer,
     CustomerOpinionAdminSerializer, FAQAdminSerializer, AboutUsAdminSerializer, InfoAdminSerializer,
@@ -15,6 +16,20 @@ from .serializers import (
     DocumentTypeAdminSerializer, DocumentOrderAdminSerializer, ReadyDocumentsAdminSerializer,
     MeetingOrderAdminSerializer, ContactsAdminSerializer
 )
+
+
+class CustomerUserViewSet(ViewSet):
+    @swagger_auto_schema()
+    def create_user(self, request):
+        pass
+
+    @swagger_auto_schema()
+    def get_user(self, request):
+        pass
+
+    @swagger_auto_schema()
+    def update_user(self, request):
+        pass
 
 
 class BannerViewSet(ViewSet):
