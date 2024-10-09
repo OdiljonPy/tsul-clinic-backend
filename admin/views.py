@@ -581,7 +581,7 @@ class ServicesCategoryViewSet(ViewSet):
         return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
-        responses=ServicesCategoryAdminSerializer(),
+        responses={200: ServicesCategoryAdminSerializer()},
         tags=['Dashboard-ServicesCategories']
     )
     def retrieve_service_category(self, request, pk):
