@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'serviceses',
     'base',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -132,7 +133,7 @@ LANGUAGES = {
 }
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
-MODELTRANSLATION_LANGUAGES = ('uz', 'ru')
+MODELTRANSLATION_LANGUAGES = ('uz', 'ru', 'en')
 
 TIME_ZONE = 'Asia/Tashkent'
 

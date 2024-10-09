@@ -109,7 +109,7 @@ class AboutUsAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AboutUs
-        field = ['id', "about_us", 'our_goal', 'image', 'about_us_uz', 'about_us_ru', 'about_us_en', 'our_goal_uz',
+        fields = ['id', "about_us", 'our_goal', 'image', 'about_us_uz', 'about_us_ru', 'about_us_en', 'our_goal_uz',
                  'our_goal_ru', 'our_goal_en']
 
 
