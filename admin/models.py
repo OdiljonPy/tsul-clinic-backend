@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -7,7 +7,7 @@ USER_ROLE = (
     (2, 'EXPERT')
 )
 
-class User(AbstractUser):
+class UserAdmin(User):
     username = models.CharField(max_length=80, unique=True)
     password = models.CharField(max_length=20)
     role = models.PositiveIntegerField(choices=USER_ROLE, default=1)
