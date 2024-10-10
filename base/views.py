@@ -103,9 +103,9 @@ class TeamViewSet(ViewSet):
     def list(self, request):
         type = request.query_params.get('volunteer')
         if not type or type and type != 'volunteer':
-            teams = Team.objects.filter(is_published=False)
+            teams = Team.objects.filter(is_volunteer=False)
         else:
-            teams = Team.objects.filter(is_published=True)
+            teams = Team.objects.filter(is_volunteer=True)
         return Response({'response': TeamSerializer(teams, context={'request': request}, many=True).data, 'ok': True},
                         status=status.HTTP_200_OK)
 
