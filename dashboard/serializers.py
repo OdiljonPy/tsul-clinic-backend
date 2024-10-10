@@ -1,11 +1,24 @@
 from rest_framework import serializers
-from django.conf import settings
 from ckeditor.fields import RichTextField
+from .models import CustomerUser
+from base.models import (
+    Banner, News, Team, Statistics,
+    CustomerOpinion, FAQ, AboutUs, Info,
+    OfficeAddress, Services, ServicesCategory,
+    AdditionalLinks, Partners
+)
 
-from base.models import Banner, News, Team, Statistics, CustomerOpinion, FAQ, AboutUs, Info, OfficeAddress, Services, \
-    ServicesCategory, AdditionalLinks, Partners
+from serviceses.models import (
+    DocumentCategory, DocumentType, DocumentOrder,
+    ReadyDocuments, MeetingOrder, Contacts
+)
 
-from serviceses.models import DocumentCategory, DocumentType, DocumentOrder, ReadyDocuments, MeetingOrder, Contacts
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerUser
+        fields = ('id', 'username', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
 
 class BannerAdminSerializer(serializers.ModelSerializer):
@@ -109,8 +122,8 @@ class AboutUsAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AboutUs
-        field = ['id', "about_us", 'our_goal', 'image', 'about_us_uz', 'about_us_ru', 'about_us_en', 'our_goal_uz',
-                 'our_goal_ru', 'our_goal_en']
+        fields = ['id', "about_us", 'our_goal', 'image', 'about_us_uz', 'about_us_ru', 'about_us_en', 'our_goal_uz',
+                  'our_goal_ru', 'our_goal_en']
 
 
 class InfoAdminSerializer(serializers.ModelSerializer):

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'serviceses',
     'base',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -84,23 +85,23 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'default'),
-        'USER': os.getenv('DB_USER', 'default'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'default'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', 5432),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DB_NAME', 'default'),
+#         'USER': os.getenv('DB_USER', 'default'),
+#         'PASSWORD': os.getenv('DB_PASSWORD', 'default'),
+#         'HOST': os.getenv('DB_HOST', 'localhost'),
+#         'PORT': os.getenv('DB_PORT', 5432),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -132,7 +133,7 @@ LANGUAGES = {
 }
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
-MODELTRANSLATION_LANGUAGES = ('uz', 'ru')
+MODELTRANSLATION_LANGUAGES = ('uz', 'ru', 'en')
 
 TIME_ZONE = 'Asia/Tashkent'
 
@@ -154,6 +155,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'dashboard.CustomerUser'
 
 CKEDITOR_UPLOAD_PATH = 'media/'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 10
