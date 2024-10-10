@@ -92,27 +92,6 @@ class FAQCategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class FAQCategoryDetailSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        language = 'ru'
-        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
-            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
-
-        self.fields['name'] = serializers.CharField(source=f'name_{language}')
-
-    class Meta:
-        model = FAQCategory
-        fields = ['id', 'name']
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['faq'] = FAQSerializer(FAQ.objects.filter(faq_category_id=instance.id), many=True,
-                                    context=self.context).data
-        return data
-
-
 class FAQSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
