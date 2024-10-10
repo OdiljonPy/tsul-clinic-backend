@@ -43,41 +43,41 @@ oylar = {
 }
 
 
-class DocumentCategory(base_models.BaseModel):
-    category_name = models.CharField(max_length=150, verbose_name="Название категории")
-    is_active = models.BooleanField(default=True, verbose_name="Активен")
-
-    def __str__(self):
-        return self.category_name
-
-    class Meta:
-        verbose_name = "Категория документа"
-        verbose_name_plural = "Категории документов"
-        ordering = ('created_at',)
-
-
-class DocumentType(base_models.BaseModel):
-    document_name = models.CharField(max_length=150, verbose_name="Название документа")
-    document_category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE,
-                                          verbose_name="Категория документа")
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
-    is_active = models.BooleanField(default=True, verbose_name="Активен")
-
-    def __str__(self):
-        return self.document_name
-
-    class Meta:
-        verbose_name = "Тип документа"
-        verbose_name_plural = "Типы документов"
-        ordering = ("created_at",)
+# class DocumentCategory(base_models.BaseModel):
+#     category_name = models.CharField(max_length=150, verbose_name="Название категории")
+#     is_active = models.BooleanField(default=True, verbose_name="Активен")
+#
+#     def __str__(self):
+#         return self.category_name
+#
+#     class Meta:
+#         verbose_name = "Категория документа"
+#         verbose_name_plural = "Категории документов"
+#         ordering = ('created_at',)
+#
+#
+# class DocumentType(base_models.BaseModel):
+#     document_name = models.CharField(max_length=150, verbose_name="Название документа")
+#     document_category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE,
+#                                           verbose_name="Категория документа")
+#     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+#     is_active = models.BooleanField(default=True, verbose_name="Активен")
+#
+#     def __str__(self):
+#         return self.document_name
+#
+#     class Meta:
+#         verbose_name = "Тип документа"
+#         verbose_name_plural = "Типы документов"
+#         ordering = ("created_at",)
 
 
 class DocumentOrder(base_models.BaseModel):
     order_number = models.BigIntegerField(blank=True, null=True, verbose_name="Номер заказа")
-    document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
-                                          verbose_name="Категория документа")
+    # document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
+    #                                       verbose_name="Категория документа")
     price = models.PositiveIntegerField(default=0, blank=True)
-    document_type = models.ForeignKey(DocumentType, on_delete=models.SET_NULL, null=True, verbose_name="Тип документа")
+    document_type = models.CharField(max_length=255, null=True, verbose_name="Тип документа")
     customer_full_name = models.CharField(max_length=250, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
@@ -165,7 +165,9 @@ class MeetingOrder(base_models.BaseModel):
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
     meeting_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
-                                        verbose_name="Цена встечи")
+                                        verbose_name="Цена встечи", default=0)
+    language = models.CharField(max_length=3, null=True, blank=True,verbose_name='язык')
+    short_description = models.CharField(max_length=255, null=True, blank=True, verbose_name='краткое описание')
     meeting_status = models.IntegerField(default=0, choices=MEETING_ORDER_STATUS, verbose_name="Статус встречи")
     meeting_type = models.IntegerField(choices=MEETING_ORDER_TYPES, verbose_name="Тип встречи")
     meeting_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи")
@@ -266,7 +268,7 @@ class Contacts(base_models.BaseModel):
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
     email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта")
     phone = models.CharField(max_length=20, verbose_name="Номер телефона")
-    type = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Тип")
+    type = models.CharField(max_length=255, null=True, blank=True, verbose_name="Тип")
     message = models.TextField(max_length=1000, verbose_name="Сообщение")
     file = models.FileField(upload_to='contacts/document/', null=True, blank=True)
 

@@ -50,7 +50,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team
-        fields = ('id', 'full_name', 'position', 'image')
+        fields = ('id', 'full_name', 'position', 'image', 'is_volunteer')
 
 
 class StatisticsSerializer(serializers.ModelSerializer):
@@ -67,14 +67,12 @@ class CustomerOpinionSerializer(serializers.ModelSerializer):
         if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
             language = request.META.get('HTTP_ACCEPT_LANGUAGE')
 
-        self.fields['company_name'] = serializers.CharField(source=f'company_name_{language}')
-        self.fields['position'] = serializers.CharField(source=f'position_{language}')
         self.fields['full_name'] = serializers.CharField(source=f'full_name_{language}')
         self.fields['opinion'] = serializers.CharField(source=f'opinion_{language}')
 
     class Meta:
         model = CustomerOpinion
-        fields = ('id', 'company_name', 'position', 'full_name', 'opinion', 'created_at', 'image')
+        fields = ('id', 'full_name', 'opinion', 'created_at', 'video')
 
 
 class FAQCategorySerializer(serializers.ModelSerializer):
@@ -247,9 +245,8 @@ class PartnersSerializer(serializers.ModelSerializer):
         if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
             language = request.META.get('HTTP_ACCEPT_LANGUAGE')
 
-        self.fields['full_name'] = serializers.CharField(source=f'full_name_{language}')
-        self.fields['position'] = serializers.CharField(source=f'position_{language}')
+        self.fields['company_name'] = serializers.CharField(source=f'full_name_{language}')
 
     class Meta:
         model = Partners
-        fields = ('id', 'full_name', 'position', 'image', 'category')
+        fields = ('id', 'company_name', 'image')

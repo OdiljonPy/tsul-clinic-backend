@@ -44,6 +44,7 @@ class Team(base_models.BaseModel):
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
     position = models.CharField(max_length=255, verbose_name="Позиция")
     image = models.ImageField(upload_to='time/', verbose_name="Изображение")
+    is_volunteer = models.BooleanField(default=False, verbose_name='является волонтером')
 
     def __str__(self):
         return self.full_name
@@ -69,14 +70,12 @@ class Statistics(base_models.BaseModel):
 
 
 class CustomerOpinion(base_models.BaseModel):
-    company_name = models.CharField(max_length=100, verbose_name="Название компании")
-    position = models.CharField(max_length=150, verbose_name="Позиция")
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
-    opinion = models.TextField(max_length=800, verbose_name="Мнение")
-    image = models.ImageField(null=True, blank=True, upload_to='customer_opinion/', verbose_name="Изображение")
+    opinion = models.TextField(max_length=800, verbose_name="Мнение", null=True, blank=True)
+    video = models.FileField(null=True, blank=True, upload_to='customer_opinion/', verbose_name="Изображение")
 
     def __str__(self):
-        return self.company_name
+        return self.full_name
 
     class Meta:
         verbose_name = "Мнение клиента"
@@ -202,13 +201,11 @@ class AdditionalLinks(base_models.BaseModel):
 
 
 class Partners(base_models.BaseModel):
-    full_name = models.CharField(max_length=150, verbose_name="Полное имя")
-    position = models.CharField(max_length=255, verbose_name="Позиция")
+    company_name = models.CharField(max_length=150, verbose_name="Название компании", null=True, blank=True)
     image = models.ImageField(upload_to='partner/', verbose_name="Изображение")
-    category = models.IntegerField(choices=CHOICE_PARTNERS, default=1)
 
     def __str__(self):
-        return self.full_name
+        return self.company_name
 
     class Meta:
         verbose_name = "Партнер"

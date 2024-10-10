@@ -30,10 +30,10 @@ class TeamTranslationOptions(TranslationOptions):
 
 
 class PartnersTranslationOptions(TranslationOptions):
-    fields = ('full_name', 'position')
+    fields = ('company_name',)
 
 class CustomerOpinionTranslationOptions(TranslationOptions):
-    fields = ('company_name', 'position', 'full_name', 'opinion')
+    fields = ('full_name', 'opinion')
 
 
 class FAQTranslationOptions(TranslationOptions):

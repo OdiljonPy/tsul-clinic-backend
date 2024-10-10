@@ -5,6 +5,7 @@ from .models import (
     Services, AdditionalLinks, Partners, FAQCategory
 )
 
+
 @admin.register(FAQCategory)
 class FAQCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
@@ -44,10 +45,9 @@ class StatisticsAdmin(admin.ModelAdmin):
 
 @admin.register(CustomerOpinion)
 class CustomerOpinionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'company_name', 'full_name', 'position')
-    list_display_links = ('id', 'company_name', 'full_name')
-    search_fields = ('id', 'company_name', 'full_name', 'position')
-    list_filter = ('company_name', 'position')
+    list_display = ('id', 'full_name',)
+    list_display_links = ('id', 'full_name')
+    search_fields = ('id', 'full_name',)
 
 
 @admin.register(FAQ)
@@ -88,7 +88,7 @@ class ServicesCategoryAdmin(admin.ModelAdmin):
 class ServicesAdmin(admin.ModelAdmin):
     list_display = ('id', 'category', 'name')
     list_display_links = ('id', 'category', 'name')
-    search_fields = ('id', 'category', 'name')
+    search_fields = ('id', 'name')
     list_filter = ('category',)
 
 
@@ -99,9 +99,9 @@ class AdditionalLinksAdmin(admin.ModelAdmin):
     search_fields = ('id', 'name')
     list_filter = ('is_published',)
 
+
 @admin.register(Partners)
 class PartnersAdmin(admin.ModelAdmin):
-    list_display = ('id', 'full_name', 'position')
-    list_display_links = ('id', 'full_name')
-    search_fields = ('id', 'full_name', 'position')
-    list_filter = ('position',)
+    list_display = ('id', 'company_name')
+    list_display_links = ('id', 'company_name')
+    search_fields = ('id', 'company_name')

@@ -5,27 +5,26 @@ from rest_framework.viewsets import ViewSet
 
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
-from .models import DocumentCategory, DocumentOrder
+from .models import  DocumentOrder
 from .serializers import (
-    DocumentCategorySerializer,
     DocumentOrderSerializer,
     MeetingOrderSerializer,
     ContactsSerializer, ComplaintSerializer
 )
 
 
-class DocumentCategoryViewSet(ViewSet):
-    @swagger_auto_schema(
-        operation_summary='Get Document Categories',
-        responses={200: DocumentCategorySerializer(many=True)},
-        tags=['DocumentCategory'],
-    )
-    def list(self, request):
-        categories = DocumentCategory.objects.filter(is_active=True, documenttype__isnull=False)
-        return Response(
-            {"response": DocumentCategorySerializer(categories, many=True, context={"request": request}).data,
-             'ok': True},
-            status=status.HTTP_200_OK)
+# class DocumentCategoryViewSet(ViewSet):
+#     @swagger_auto_schema(
+#         operation_summary='Get Document Categories',
+#         responses={200: DocumentCategorySerializer(many=True)},
+#         tags=['DocumentCategory'],
+#     )
+#     def list(self, request):
+#         categories = DocumentCategory.objects.filter(is_active=True, documenttype__isnull=False)
+#         return Response(
+#             {"response": DocumentCategorySerializer(categories, many=True, context={"request": request}).data,
+#              'ok': True},
+#             status=status.HTTP_200_OK)
 
 
 class DocumentOrderViewSet(ViewSet):

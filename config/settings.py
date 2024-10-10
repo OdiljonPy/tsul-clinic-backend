@@ -128,10 +128,11 @@ get_text = lambda x: x
 LANGUAGES = {
     'uz': get_text("Uzbek"),
     'ru': get_text("Russian"),
+    'en': get_text("English"),
 }
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
-MODELTRANSLATION_LANGUAGES = ('uz', 'ru')
+MODELTRANSLATION_LANGUAGES = ('uz', 'ru', 'en')
 
 TIME_ZONE = 'Asia/Tashkent'
 
