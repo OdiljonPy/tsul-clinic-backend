@@ -1,10 +1,10 @@
-from base import models as base_models
-from serviceses import models as services_models
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
-from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework import status
+from base import models as base_models
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
+from serviceses import models as services_models
 from exceptions.exception import CustomApiException
 from exceptions.error_messages import ErrorCodes
 from .models import CustomerUser
@@ -14,21 +14,43 @@ from .serializers import (
     OfficeAddressAdminSerializer, ServicesCategoryAdminSerializer, ServicesAdminSerializer,
     AdditionalLinksAdminSerializer, PartnersAdminSerializer, DocumentCategoryAdminSerializer,
     DocumentTypeAdminSerializer, DocumentOrderAdminSerializer, ReadyDocumentsAdminSerializer,
-    MeetingOrderAdminSerializer, ContactsAdminSerializer
+    MeetingOrderAdminSerializer, ContactsAdminSerializer, CustomUserSerializer
 )
 
 
 class CustomerUserViewSet(ViewSet):
-    @swagger_auto_schema()
-    def create_user(self, request):
-        pass
+    @swagger_auto_schema(
+        request_body=CustomUserSerializer(),
+        responses={201: CustomUserSerializer()},
+        tags=['Dashboard-CustomUser'],
+    )
+    def create(self, request):
+        serializer = CustomUserSerializer(data=request.data)
+        if not serializer.is_valid():
+            raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
+        username = serializer.validated_data.get('username')
+        if CustomerUser.objects.filter(username=username).exists():
+            raise CustomApiException(ErrorCodes.INVALID_INPUT, message='This user already exists')
+        serializer.save()
+        return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema()
-    def get_user(self, request):
-        pass
+    @swagger_auto_schema(
+        responses={200: CustomUserSerializer()},
+        tags=['Dashboard-CustomUser'],
+    )
+    def get_user(self, request, pk):
+        user = CustomerUser.objects.filter(id=pk).first()
+        if not user:
+            raise CustomApiException(ErrorCodes.NOT_FOUND)
+        serializer = CustomUserSerializer(user)
+        return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema()
-    def update_user(self, request):
+    @swagger_auto_schema(
+        request_body=CustomUserSerializer(),
+        responses={200: CustomUserSerializer()},
+        tags=['Dashboard-CustomUser'],
+    )
+    def update_user(self, request, pk):
         pass
 
 

@@ -2,6 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('user/', views.CustomerUserViewSet.as_view({'post': 'create'})),
+    path('user/<int:pk>/', views.CustomerUserViewSet.as_view({'get': 'get_user'})),
+
     path('banners/', views.BannerViewSet.as_view({'post': 'create_banner', 'get': 'list_banners'})),
     path('banners/<int:pk>/', views.BannerViewSet.as_view(
         {'get': 'retrieve_banner', 'patch': 'update_banner', 'delete': 'delete_banner'})),
