@@ -10,7 +10,7 @@ from .serializers import (
     DocumentCategorySerializer,
     DocumentOrderSerializer,
     MeetingOrderSerializer,
-    ContactsSerializer
+    ContactsSerializer, ComplaintSerializer
 )
 
 
@@ -76,6 +76,24 @@ class ContactsViewSet(ViewSet):
     )
     def create(self, request):
         serializer = ContactsSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
+        serializer.save()
+        return Response({'response': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
+
+
+class ComplaintViewSet(ViewSet):
+    @swagger_auto_schema(
+        request_body=ComplaintSerializer,
+        responses={201: ComplaintSerializer()},
+        tags=['Complaints'],
+        operation_summary='Create complaint',
+        operation_description='Create complaint, DocumentOrder id for pk',
+    )
+    def create(self, request, pk):
+        data = request.data
+        data['order_document'] = pk
+        serializer = ComplaintSerializer(data=data, context={'request': request})
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()

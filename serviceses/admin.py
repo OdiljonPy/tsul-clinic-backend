@@ -1,9 +1,12 @@
 from django.contrib import admin
 from admin_interface.models import Theme
-from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts, ReadyDocuments
+from .models import DocumentCategory, DocumentType, DocumentOrder, MeetingOrder, Contacts, ReadyDocuments, Complaint
 
 
 # admin.site.unregister(Theme)
+class ComplaintAdminTabularInline(admin.TabularInline):
+    model = Complaint
+    extra = 0
 
 class DocumentTypeAdminTabularInline(admin.TabularInline):
     model = DocumentType
@@ -42,7 +45,7 @@ class DocumentOrderAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'order_number', 'customer_full_name')
     search_fields = ('id', 'order_number', 'customer_full_name')
     list_filter = ('status',)
-    inlines = (ReadyDocumentsTabularInline,)
+    inlines = (ReadyDocumentsTabularInline,ComplaintAdminTabularInline)
     readonly_fields = ('order_number',)
 
 

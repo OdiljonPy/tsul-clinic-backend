@@ -5,7 +5,7 @@ from .models import (
     DocumentType,
     DocumentOrder,
     MeetingOrder,
-    Contacts, ReadyDocuments
+    Contacts, ReadyDocuments, Complaint
 )
 
 
@@ -55,7 +55,7 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentOrder
         fields = ('id', 'order_number', 'document_category', 'document_type', 'customer_full_name', 'customer_phone',
-                  'customer_email', 'customer_message', 'status', 'price', 'created_at')
+                  'customer_email', 'customer_message', 'status', 'price', 'created_at', 'file')
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -89,4 +89,10 @@ class MeetingOrderSerializer(serializers.ModelSerializer):
 class ContactsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contacts
-        fields = ('id', 'full_name', 'email', 'phone', 'message', 'type')
+        fields = ('id', 'full_name', 'email', 'phone', 'message', 'type', 'file')
+
+
+class ComplaintSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Complaint
+        fields = ['id', 'complaint', 'order_document']

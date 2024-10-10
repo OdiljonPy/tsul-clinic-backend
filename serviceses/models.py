@@ -83,6 +83,7 @@ class DocumentOrder(base_models.BaseModel):
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
     customer_message = models.TextField(max_length=1000, verbose_name="Сообщение клиента")
     status = models.IntegerField(default=0, choices=DOCUMENT_ORDER_STATUS, verbose_name="Статус")
+    file = models.FileField(upload_to='order/document/', null=True, blank=True)
 
     def __str__(self):
         return self.customer_full_name
@@ -108,7 +109,6 @@ def track_old_instance(sender, instance, **kwargs):
         # Store the old instance's status in the instance itself
         old_instance = sender.objects.get(pk=instance.pk)
         instance._old_status = old_instance.status
-
 
 
 @receiver(pre_save, sender=DocumentOrder)
@@ -200,7 +200,8 @@ class MeetingOrder(base_models.BaseModel):
 def track_old_instance(sender, instance, **kwargs):
     # Capture the old instance data before saving the updated instance
     if instance.pk:
-        instance._old_instance = sender.objects.filter(pk=instance.pk).values('meeting_time', 'meeting_type', 'meeting_status').first()
+        instance._old_instance = sender.objects.filter(pk=instance.pk).values('meeting_time', 'meeting_type',
+                                                                              'meeting_status').first()
 
 
 @receiver(post_save, sender=MeetingOrder)
@@ -267,6 +268,7 @@ class Contacts(base_models.BaseModel):
     phone = models.CharField(max_length=20, verbose_name="Номер телефона")
     type = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Тип")
     message = models.TextField(max_length=1000, verbose_name="Сообщение")
+    file = models.FileField(upload_to='contacts/document/', null=True, blank=True)
 
     def __str__(self):
         return self.full_name
@@ -274,4 +276,17 @@ class Contacts(base_models.BaseModel):
     class Meta:
         verbose_name = "Контакт"
         verbose_name_plural = "Контакты"
+        ordering = ('created_at',)
+
+
+class Complaint(base_models.BaseModel):
+    order_document = models.ForeignKey(DocumentOrder, on_delete=models.CASCADE)
+    complaint = models.TextField()
+
+    def __str__(self):
+        return self.complaint[:20]
+
+    class Meta:
+        verbose_name = "Жалоба"
+        verbose_name_plural = "Жалобы"
         ordering = ('created_at',)
