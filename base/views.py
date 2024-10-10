@@ -20,7 +20,10 @@ from .models import (
     Services,
     AdditionalLinks,
     Banner,
-    Partners, CHOICE_PARTNERS, FAQCategory
+    Partners,
+    CHOICE_PARTNERS,
+    FAQCategory,
+    Projects, Achievements
 )
 from .repository.get_news import get_news
 from .serializers import (
@@ -36,7 +39,7 @@ from .serializers import (
     ServicesSerializer,
     AdditionalLinksSerializer,
     BannerSerializer,
-    PartnersSerializer, FAQCategorySerializer
+    PartnersSerializer, FAQCategorySerializer, ProjectsSerializer, AchievementsImages, AchievementsSerializer
 )
 
 
@@ -91,11 +94,15 @@ class TeamViewSet(ViewSet):
     @swagger_auto_schema(
         operation_summary='Team list',
         responses={200: TeamSerializer(many=True)},
+        manual_parameters=[
+            openapi.Parameter(
+                name='type', in_=openapi.IN_QUERY, type=openapi.TYPE_STRING, description='volunteer')
+        ],
         tags=['Team'],
     )
     def list(self, request):
-        volunteer = request.query_params.get('volunteer')
-        if not volunteer or volunteer and volunteer != 'volunteer':
+        type = request.query_params.get('volunteer')
+        if not type or type and type != 'volunteer':
             teams = Team.objects.filter(is_published=False)
         else:
             teams = Team.objects.filter(is_published=True)
@@ -256,3 +263,24 @@ class BaseViewSet(ViewSet):
         return Response(
             {'response': BannerSerializer(banner, many=True, context={'request': request}).data, 'ok': True},
             status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary='Project list',
+        responses={200: ProjectsSerializer(many=True)},
+        tags=['Base'],
+    )
+    def get_projects(self, request):
+        projects = Projects.objects.all()
+        return Response(
+            {'response': ProjectsSerializer(projects, many=True, context={'request': request}).data, 'ok': True},
+            status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary='Achievements list',
+        responses={200: AchievementsSerializer(many=True)},
+        tags=['Base'],
+    )
+    def list_achievement(self, request):
+        achievements = Achievements.objects.all()
+        return Response({'response': AchievementsSerializer(achievements, many=True, context={'request': request}).data,
+                         'ok': True}, status=status.HTTP_200_OK)

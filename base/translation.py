@@ -11,13 +11,13 @@ from .models import (
     Services,
     AdditionalLinks,
     Partners,
-    FAQCategory
+    FAQCategory, Projects, Achievements
 )
 
 class FAQCategoryTranslationOptions(TranslationOptions):
     fields = ('name',)
 
-class BaseTranslationOptions(TranslationOptions):
+class BannerTranslationOptions(TranslationOptions):
     fields = ('text',)
 
 
@@ -59,8 +59,14 @@ class ServicesTranslationOptions(TranslationOptions):
 class AdditionalLinksTranslationOptions(TranslationOptions):
     fields = ('name',)
 
+class ProjectsTranslationOptions(TranslationOptions):
+    fields = ('short_description',)
 
-translator.register(Banner, BaseTranslationOptions)
+class AchievementsOptions(TranslationOptions):
+    fields = ('short_description',)
+
+
+translator.register(Banner,BannerTranslationOptions)
 translator.register(News, NewsTranslationOptions)
 translator.register(Team, TeamTranslationOptions)
 translator.register(Partners, PartnersTranslationOptions)
@@ -72,3 +78,5 @@ translator.register(ServicesCategory, ServicesCategoryTranslationOptions)
 translator.register(Services, ServicesTranslationOptions)
 translator.register(AdditionalLinks, AdditionalLinksTranslationOptions)
 translator.register(FAQCategory, FAQCategoryTranslationOptions)
+translator.register(Projects, ProjectsTranslationOptions)
+translator.register(Achievements, AchievementsOptions)

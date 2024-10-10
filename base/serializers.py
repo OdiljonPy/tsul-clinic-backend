@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from rest_framework import serializers
 
@@ -16,7 +18,7 @@ from .models import (
     Services,
     AdditionalLinks,
     Banner,
-    Partners, FAQCategory
+    Partners, FAQCategory, Projects, Achievements, AchievementsImages
 )
 
 
@@ -245,8 +247,50 @@ class PartnersSerializer(serializers.ModelSerializer):
         if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
             language = request.META.get('HTTP_ACCEPT_LANGUAGE')
 
-        self.fields['company_name'] = serializers.CharField(source=f'full_name_{language}')
+        self.fields['company_name'] = serializers.CharField(source=f'company_name_{language}')
 
     class Meta:
         model = Partners
         fields = ('id', 'company_name', 'image')
+
+
+class ProjectsSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['short_description'] = serializers.CharField(source=f'short_description_{language}')
+
+    class Meta:
+        model = Projects
+        fields = ('id', 'short_description', 'image', 'telegram_url', 'instagram_url', 'youtube_url', 'website_url',
+                  'twitter_url', 'linkedin_url')
+
+
+class AchievementsSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['short_description'] = serializers.CharField(source=f'short_description_{language}')
+
+    class Meta:
+        model = Achievements
+        fields = ('id', 'short_description')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['images'] = AchievementsImagesSerializer(instance.get_images, many=True, context=self.context).data
+        return data
+
+
+class AchievementsImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AchievementsImages
+        fields = ('id', 'image')

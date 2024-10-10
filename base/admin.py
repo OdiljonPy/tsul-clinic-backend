@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Banner, News, Team, Statistics, CustomerOpinion,
     FAQ, AboutUs, Info, OfficeAddress, ServicesCategory,
-    Services, AdditionalLinks, Partners, FAQCategory
+    Services, AdditionalLinks, Partners, FAQCategory, Projects, Achievements, AchievementsImages
 )
 
 
@@ -105,3 +105,22 @@ class PartnersAdmin(admin.ModelAdmin):
     list_display = ('id', 'company_name')
     list_display_links = ('id', 'company_name')
     search_fields = ('id', 'company_name')
+
+
+@admin.register(Projects)
+class ProjectsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'short_description')
+    list_display_links = ('id', 'short_description')
+    search_fields = ('id', 'short_description')
+
+
+class AchievementsImagesAdmin(admin.TabularInline):
+    model = AchievementsImages
+    extra = 1
+
+
+@admin.register(Achievements)
+class AchievementsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'short_description')
+    list_display_links = ('id', 'short_description')
+    inlines = (AchievementsImagesAdmin,)

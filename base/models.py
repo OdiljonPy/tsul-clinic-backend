@@ -1,5 +1,6 @@
 from ckeditor.fields import RichTextField
 from django.db import models
+from django.db.models import CASCADE
 
 from abstract_models import base_models
 
@@ -211,3 +212,36 @@ class Partners(base_models.BaseModel):
         verbose_name = "Партнер"
         verbose_name_plural = "Партнеры"
         ordering = ('created_at',)
+
+
+class Projects(base_models.BaseModel):
+    short_description = models.CharField(max_length=255, verbose_name='краткое описание')
+    image = models.ImageField(upload_to='project/', verbose_name='изображение')
+    youtube_url = models.URLField(null=True, blank=True)
+    telegram_url = models.URLField(null=True, blank=True)
+    instagram_url = models.URLField(null=True, blank=True)
+    website_url = models.URLField(null=True, blank=True)
+    twitter_url = models.URLField(null=True, blank=True)
+    linkedin_url = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.short_description
+
+
+class Achievements(base_models.BaseModel):
+    short_description = models.CharField(max_length=255, verbose_name='краткое описание')
+
+    def __str__(self):
+        return self.short_description
+
+    @property
+    def get_images(self):
+        return self.achievementsimages_set.all()
+
+
+class AchievementsImages(base_models.BaseModel):
+    achievement = models.ForeignKey(Achievements, on_delete=CASCADE)
+    image = models.ImageField(upload_to='achievements/')
+
+    def __str__(self):
+        return self.achievement.id
