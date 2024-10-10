@@ -16,7 +16,7 @@ from .models import (
     Services,
     AdditionalLinks,
     Banner,
-    Partners
+    Partners, FAQCategory
 )
 
 
@@ -75,6 +75,42 @@ class CustomerOpinionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerOpinion
         fields = ('id', 'company_name', 'position', 'full_name', 'opinion', 'created_at', 'image')
+
+
+class FAQCategorySerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['name'] = serializers.CharField(source=f'name_{language}')
+
+    class Meta:
+        model = FAQCategory
+        fields = ['id', 'name']
+
+
+class FAQCategoryDetailSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['name'] = serializers.CharField(source=f'name_{language}')
+
+    class Meta:
+        model = FAQCategory
+        fields = ['id', 'name']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['faq'] = FAQSerializer(FAQ.objects.filter(faq_category_id=instance.id), many=True,
+                                    context=self.context).data
+        return data
 
 
 class FAQSerializer(serializers.ModelSerializer):
@@ -213,8 +249,8 @@ class BannerSerializer(serializers.ModelSerializer):
 
 
 class PaginatorSerializer(serializers.Serializer):
-    page = serializers.IntegerField(required=False,default=1)
-    page_size = serializers.IntegerField(required=False,default=10)
+    page = serializers.IntegerField(required=False, default=1)
+    page_size = serializers.IntegerField(required=False, default=10)
 
     def validate(self, attrs):
         page = attrs.get('page')
@@ -222,7 +258,6 @@ class PaginatorSerializer(serializers.Serializer):
         if page_size < 0 or page < 0:
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message='Page or page size is invalid')
         return attrs
-
 
 
 class PartnersSerializer(serializers.ModelSerializer):

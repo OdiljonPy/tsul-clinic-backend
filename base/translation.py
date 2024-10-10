@@ -10,9 +10,12 @@ from .models import (
     ServicesCategory,
     Services,
     AdditionalLinks,
-    Partners
+    Partners,
+    FAQCategory
 )
 
+class FAQCategoryTranslationOptions(TranslationOptions):
+    fields = ('name',)
 
 class BaseTranslationOptions(TranslationOptions):
     fields = ('text',)
@@ -68,3 +71,4 @@ translator.register(OfficeAddress, OfficeAddressTranslationOptions)
 translator.register(ServicesCategory, ServicesCategoryTranslationOptions)
 translator.register(Services, ServicesTranslationOptions)
 translator.register(AdditionalLinks, AdditionalLinksTranslationOptions)
+translator.register(FAQCategory, FAQCategoryTranslationOptions)

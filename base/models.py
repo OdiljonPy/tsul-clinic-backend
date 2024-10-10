@@ -84,7 +84,20 @@ class CustomerOpinion(base_models.BaseModel):
         ordering = ('created_at',)
 
 
+class FAQCategory(base_models.BaseModel):
+    name = models.CharField(max_length=150, verbose_name='Название')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Категория часто задаваемого вопроса"
+        verbose_name_plural = "Категории часто задоваемых вопросов"
+        ordering = ('created_at',)
+
+
 class FAQ(base_models.BaseModel):
+    faq_category = models.ForeignKey(FAQCategory, on_delete=models.CASCADE)
     question = models.TextField(max_length=500, verbose_name="Вопрос")
     answer = models.TextField(max_length=1000, verbose_name="Ответ")
     is_published = models.BooleanField(default=True, verbose_name="Опубликовано")

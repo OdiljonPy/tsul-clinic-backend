@@ -20,7 +20,7 @@ from .models import (
     Services,
     AdditionalLinks,
     Banner,
-    Partners, CHOICE_PARTNERS
+    Partners, CHOICE_PARTNERS, FAQCategory
 )
 from .repository.get_news import get_news
 from .serializers import (
@@ -36,7 +36,7 @@ from .serializers import (
     ServicesSerializer,
     AdditionalLinksSerializer,
     BannerSerializer,
-    PartnersSerializer
+    PartnersSerializer, FAQCategorySerializer, FAQCategoryDetailSerializer
 )
 
 
@@ -140,6 +140,31 @@ class BaseViewSet(ViewSet):
         opinions = CustomerOpinion.objects.all().order_by('-created_at')
         return Response({'response': CustomerOpinionSerializer(opinions, many=True, context={'request': request}).data,
                          'ok': True}, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary='FAQ category list',
+        operation_description="FAQ category list",
+        responses={200: FAQCategorySerializer(many=True)},
+        tags=['Base'],
+    )
+    def list_faq_category(self, request):
+        faq_category = FAQCategory.objects.all()
+        serializer = FAQCategorySerializer(faq_category, many=True, context={'request': request})
+        return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="FAQ category detail",
+        operation_description='FAQ category detail',
+        responses={200: FAQCategoryDetailSerializer()},
+        tags=['Base'],
+    )
+    def faq_category_detail(self, request, pk):
+        faq_category = FAQCategory.objects.filter(id=pk).first()
+        if not faq_category:
+            raise CustomApiException(error_code=ErrorCodes.NOT_FOUND, message='FAQ category not found')
+
+        serializer = FAQCategoryDetailSerializer(faq_category, context={'request': request})
+        return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Frequently Asked Question list',

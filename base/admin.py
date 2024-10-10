@@ -2,8 +2,13 @@ from django.contrib import admin
 from .models import (
     Banner, News, Team, Statistics, CustomerOpinion,
     FAQ, AboutUs, Info, OfficeAddress, ServicesCategory,
-    Services, AdditionalLinks, Partners
+    Services, AdditionalLinks, Partners, FAQCategory
 )
+
+@admin.register(FAQCategory)
+class FAQCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
 
 
 @admin.register(Banner)
