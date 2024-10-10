@@ -97,7 +97,7 @@ class FAQCategory(base_models.BaseModel):
 
 
 class FAQ(base_models.BaseModel):
-    faq_category = models.ForeignKey(FAQCategory, on_delete=models.CASCADE)
+    faq_category = models.ForeignKey(FAQCategory, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Категория ЧЗВ")
     question = models.TextField(max_length=500, verbose_name="Вопрос")
     answer = models.TextField(max_length=1000, verbose_name="Ответ")
     is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
