@@ -5,7 +5,7 @@ from rest_framework.viewsets import ViewSet
 
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
-from .models import  DocumentOrder
+from .models import DocumentOrder, DocumentOrderPage
 from .serializers import (
     DocumentOrderSerializer,
     MeetingOrderSerializer,
@@ -35,12 +35,24 @@ class DocumentOrderViewSet(ViewSet):
         tags=['DocumentOrder'],
     )
     def create(self, request):
+        check_page = DocumentOrderPage.objects.order_by('-created_at').first()
+        if getattr(check_page, 'is_active', False) is False:
+            raise CustomApiException(ErrorCodes.NOT_FOUND)
         serializer = DocumentOrderSerializer(data=request.data, context={'request': request})
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         order = serializer.save()
 
         return Response({'response': DocumentOrderSerializer(order).data, 'ok': True}, status=status.HTTP_201_CREATED)
+
+    @swagger_auto_schema(
+        operation_summary='Check Document order page',
+        responses={200: 'response: True/False'},
+        tags=['DocumentOrder Page'],
+    )
+    def get_check_page(self, request):
+        check_page = DocumentOrderPage.objects.order_by('-created_at')
+        return Response({'response': getattr(check_page, 'is_active', False), 'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='Check order for documents',

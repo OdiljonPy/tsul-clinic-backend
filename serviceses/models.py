@@ -166,7 +166,7 @@ class MeetingOrder(base_models.BaseModel):
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
     meeting_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
                                         verbose_name="Цена встечи", default=0)
-    language = models.CharField(max_length=3, null=True, blank=True,verbose_name='язык')
+    language = models.CharField(max_length=3, null=True, blank=True, verbose_name='язык')
     short_description = models.CharField(max_length=255, null=True, blank=True, verbose_name='краткое описание')
     meeting_status = models.IntegerField(default=0, choices=MEETING_ORDER_STATUS, verbose_name="Статус встречи")
     meeting_type = models.IntegerField(choices=MEETING_ORDER_TYPES, verbose_name="Тип встречи")
@@ -292,3 +292,10 @@ class Complaint(base_models.BaseModel):
         verbose_name = "Жалоба"
         verbose_name_plural = "Жалобы"
         ordering = ('created_at',)
+
+
+class DocumentOrderPage(base_models.BaseModel):
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.id)
