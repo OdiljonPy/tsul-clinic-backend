@@ -206,7 +206,7 @@ class Partners(base_models.BaseModel):
     image = models.ImageField(upload_to='partner/', verbose_name="Изображение")
 
     def __str__(self):
-        return self.company_name
+        return self.company_name or str(self.id)
 
     class Meta:
         verbose_name = "Партнер"
@@ -217,15 +217,20 @@ class Partners(base_models.BaseModel):
 class Projects(base_models.BaseModel):
     short_description = models.CharField(max_length=255, verbose_name='краткое описание')
     image = models.ImageField(upload_to='project/', verbose_name='изображение')
-    youtube_url = models.URLField(null=True, blank=True)
-    telegram_url = models.URLField(null=True, blank=True)
-    instagram_url = models.URLField(null=True, blank=True)
-    website_url = models.URLField(null=True, blank=True)
-    twitter_url = models.URLField(null=True, blank=True)
-    linkedin_url = models.URLField(null=True, blank=True)
+    youtube_url = models.URLField(null=True, blank=True, verbose_name="Ютуб url")
+    telegram_url = models.URLField(null=True, blank=True, verbose_name="Телеграм url")
+    instagram_url = models.URLField(null=True, blank=True, verbose_name="Инстаграм url")
+    website_url = models.URLField(null=True, blank=True, verbose_name="Вебсайт url")
+    twitter_url = models.URLField(null=True, blank=True, verbose_name="Твиттер url")
+    linkedin_url = models.URLField(null=True, blank=True, verbose_name="Линкедин url")
 
     def __str__(self):
         return self.short_description
+
+    class Meta:
+        verbose_name = 'Проэкт'
+        verbose_name_plural = 'Проэкты'
+        ordering = ('created_at',)
 
 
 class Achievements(base_models.BaseModel):
@@ -238,10 +243,20 @@ class Achievements(base_models.BaseModel):
     def get_images(self):
         return self.achievementsimages_set.all()
 
+    class Meta:
+        verbose_name = "Достижение"
+        verbose_name_plural = "Достижения"
+        ordering = ('created_at',)
+
 
 class AchievementsImages(base_models.BaseModel):
-    achievement = models.ForeignKey(Achievements, on_delete=CASCADE)
-    image = models.ImageField(upload_to='achievements/')
+    achievement = models.ForeignKey(Achievements, on_delete=CASCADE, verbose_name="Досижение")
+    image = models.ImageField(upload_to='achievements/', verbose_name="Изображение")
 
     def __str__(self):
         return self.achievement.id
+
+    class Meta:
+        verbose_name = "Изображение достижения"
+        verbose_name_plural = "Изображения достижений"
+        ordering = ('created_at',)

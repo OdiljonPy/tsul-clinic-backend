@@ -76,14 +76,14 @@ class DocumentOrder(base_models.BaseModel):
     order_number = models.BigIntegerField(blank=True, null=True, verbose_name="Номер заказа")
     # document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
     #                                       verbose_name="Категория документа")
-    price = models.PositiveIntegerField(default=0, blank=True)
+    price = models.PositiveIntegerField(default=0, blank=True, verbose_name="Цена")
     document_type = models.CharField(max_length=255, null=True, verbose_name="Тип документа")
     customer_full_name = models.CharField(max_length=250, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
     customer_message = models.TextField(max_length=1000, verbose_name="Сообщение клиента")
     status = models.IntegerField(default=0, choices=DOCUMENT_ORDER_STATUS, verbose_name="Статус")
-    file = models.FileField(upload_to='order/document/', null=True, blank=True)
+    file = models.FileField(upload_to='order/document/', null=True, blank=True, verbose_name="Файл")
 
     def __str__(self):
         return self.customer_full_name
@@ -270,7 +270,7 @@ class Contacts(base_models.BaseModel):
     phone = models.CharField(max_length=20, verbose_name="Номер телефона")
     type = models.CharField(max_length=255, null=True, blank=True, verbose_name="Тип")
     message = models.TextField(max_length=1000, verbose_name="Сообщение")
-    file = models.FileField(upload_to='contacts/document/', null=True, blank=True)
+    file = models.FileField(upload_to='contacts/document/', null=True, blank=True, verbose_name="Файл")
 
     def __str__(self):
         return self.full_name
@@ -282,8 +282,8 @@ class Contacts(base_models.BaseModel):
 
 
 class Complaint(base_models.BaseModel):
-    order_document = models.ForeignKey(DocumentOrder, on_delete=models.CASCADE)
-    complaint = models.TextField()
+    order_document = models.ForeignKey(DocumentOrder, on_delete=models.CASCADE, verbose_name="Заказ документа")
+    complaint = models.TextField(verbose_name="Жалоба")
 
     def __str__(self):
         return self.complaint[:20]
@@ -295,7 +295,12 @@ class Complaint(base_models.BaseModel):
 
 
 class DocumentOrderPage(base_models.BaseModel):
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False, verbose_name="Активен")
 
     def __str__(self):
         return str(self.id)
+
+    class Meta:
+        verbose_name = 'Страница заказа документа'
+        verbose_name_plural = 'Страница заказов документов'
+        ordering = ("created_at",)
