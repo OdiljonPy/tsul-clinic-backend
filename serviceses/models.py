@@ -1,9 +1,9 @@
-from django.utils import timezone
-
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.utils import timezone
+
 from abstract_models import base_models
 from serviceses.utils import validate_uz_number
 from utils.notification_messages import get_message, MessageEnumCode
@@ -46,41 +46,10 @@ oylar = {
 }
 
 
-# class DocumentCategory(base_models.BaseModel):
-#     category_name = models.CharField(max_length=150, verbose_name="Название категории")
-#     is_active = models.BooleanField(default=True, verbose_name="Активен")
-#
-#     def __str__(self):
-#         return self.category_name
-#
-#     class Meta:
-#         verbose_name = "Категория документа"
-#         verbose_name_plural = "Категории документов"
-#         ordering = ('created_at',)
-#
-#
-# class DocumentType(base_models.BaseModel):
-#     document_name = models.CharField(max_length=150, verbose_name="Название документа")
-#     document_category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE,
-#                                           verbose_name="Категория документа")
-#     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
-#     is_active = models.BooleanField(default=True, verbose_name="Активен")
-#
-#     def __str__(self):
-#         return self.document_name
-#
-#     class Meta:
-#         verbose_name = "Тип документа"
-#         verbose_name_plural = "Типы документов"
-#         ordering = ("created_at",)
-
-
 class DocumentOrder(base_models.BaseModel):
     order_number = models.BigIntegerField(blank=True, null=True, verbose_name="Номер заказа")
-    # document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
-    #                                       verbose_name="Категория документа")
-    price = models.PositiveIntegerField(default=0, blank=True)
-    expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    price = models.PositiveIntegerField(default=0, blank=True, verbose_name="Цена")
+    expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Эксперт")
     document_type = models.CharField(max_length=255, null=True, verbose_name="Тип документа")
     customer_full_name = models.CharField(max_length=250, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
@@ -170,8 +139,8 @@ class MeetingOrder(base_models.BaseModel):
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
     meeting_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
                                         verbose_name="Цена встечи", default=0)
-    language = models.CharField(max_length=3, null=True, blank=True, verbose_name='язык')
-    expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    language = models.CharField(max_length=3, null=True, blank=True, verbose_name='Язык')
+    expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Эксперт")
     short_description = models.CharField(max_length=255, null=True, blank=True, verbose_name='краткое описание')
     meeting_status = models.IntegerField(default=0, choices=MEETING_ORDER_STATUS, verbose_name="Статус встречи")
     meeting_type = models.IntegerField(choices=MEETING_ORDER_TYPES, verbose_name="Тип встречи")
@@ -272,24 +241,38 @@ def create_meeting_notification(sender, instance, created, **kwargs):
 
 
 class MeetingLink(models.Model):
-    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='link')
-    link = models.URLField()
-    is_send_sms = models.BooleanField(default=False)
+    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='link', verbose_name="Встреча")
+    link = models.URLField(verbose_name="Ссылка")
+    is_send_sms = models.BooleanField(default=False, verbose_name="Смс отправлен")
+
+    class Meta:
+        verbose_name = "Ссылка встречи"
+        verbose_name_plural = "Ссылки встреч"
+        ordering = ('created_at',)
 
 
 class MeetingPhone(models.Model):
-    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='phone')
-    phone_number = models.CharField(max_length=14, validators=[validate_uz_number])
-    full_name = models.CharField(max_length=255)
-    is_send_sms = models.BooleanField(default=False)
+    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='phone', verbose_name="Встреча")
+    phone_number = models.CharField(max_length=14, validators=[validate_uz_number], verbose_name="Номер телефона")
+    full_name = models.CharField(max_length=255, verbose_name="Полное имя")
+    is_send_sms = models.BooleanField(default=False, verbose_name="Смс отправлен")
+
+    class Meta:
+        verbose_name = "Телефонная встреча"
+        verbose_name_plural = "Телефонные встречи"
+        ordering = ('created_at',)
 
 
 class MeetingLocation(models.Model):
-    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='location')
-    location_name = models.CharField(max_length=255)
-    location_url = models.URLField()
+    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='location',
+                                   verbose_name="Встреча")
+    location_name = models.CharField(max_length=255, verbose_name="Название локации")
+    location_url = models.URLField(verbose_name="Локация url")
 
-
+    class Meta:
+        verbose_name = "Локация встречи"
+        verbose_name_plural = "Локации встреч"
+        ordering = ('created_at',)
 
 
 class Contacts(base_models.BaseModel):
