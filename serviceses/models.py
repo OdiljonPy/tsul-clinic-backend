@@ -248,7 +248,6 @@ class MeetingLink(models.Model):
     class Meta:
         verbose_name = "Ссылка встречи"
         verbose_name_plural = "Ссылки встреч"
-        ordering = ('created_at',)
 
 
 class MeetingPhone(models.Model):
@@ -260,7 +259,6 @@ class MeetingPhone(models.Model):
     class Meta:
         verbose_name = "Телефонная встреча"
         verbose_name_plural = "Телефонные встречи"
-        ordering = ('created_at',)
 
 
 class MeetingLocation(models.Model):
@@ -272,7 +270,6 @@ class MeetingLocation(models.Model):
     class Meta:
         verbose_name = "Локация встречи"
         verbose_name_plural = "Локации встреч"
-        ordering = ('created_at',)
 
 
 class Contacts(base_models.BaseModel):
