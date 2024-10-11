@@ -206,7 +206,7 @@ class Partners(base_models.BaseModel):
     image = models.ImageField(upload_to='partner/', verbose_name="Изображение")
 
     def __str__(self):
-        return self.company_name
+        return self.company_name or str(self.id)
 
     class Meta:
         verbose_name = "Партнер"
