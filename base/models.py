@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import CASCADE
 
 from abstract_models import base_models
+from base.utils import validate_video_file
 
 CHOICE_PARTNERS = (
     (1, 'Юристы'),
@@ -84,7 +85,7 @@ class Statistics(base_models.BaseModel):
 class CustomerOpinion(base_models.BaseModel):
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
     opinion = models.TextField(max_length=800, verbose_name="Мнение", null=True, blank=True)
-    video = models.FileField(null=True, blank=True, upload_to='customer_opinion/', verbose_name="Видео")
+    video = models.FileField(null=True, blank=True, upload_to='customer_opinion/', verbose_name="Видео", validators=[validate_video_file])
 
     def __str__(self):
         return self.full_name
