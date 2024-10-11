@@ -12,10 +12,14 @@ CHOICE_PARTNERS = (
 
 
 class ManualWebsite(models.Model):
-    youtube_link = models.URLField()
+    youtube_link = models.URLField(verbose_name="Ютуб видео ссылка")
 
     def __str__(self):
         return str(self.id)
+
+    class Meta:
+        verbose_name = "Правило прользования вебсайтом"
+        verbose_name_plural = "Правила прользования вебсайтом"
 
 
 class Banner(base_models.BaseModel):
