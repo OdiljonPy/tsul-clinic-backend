@@ -84,7 +84,7 @@ class Statistics(base_models.BaseModel):
 class CustomerOpinion(base_models.BaseModel):
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
     opinion = models.TextField(max_length=800, verbose_name="Мнение", null=True, blank=True)
-    video = models.FileField(null=True, blank=True, upload_to='customer_opinion/', verbose_name="Изображение")
+    video = models.FileField(null=True, blank=True, upload_to='customer_opinion/', verbose_name="Видео")
 
     def __str__(self):
         return self.full_name
