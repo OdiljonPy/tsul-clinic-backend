@@ -164,7 +164,8 @@ class BaseViewSet(ViewSet):
             raise CustomApiException(error_code=ErrorCodes.NOT_FOUND, message='FAQ category not found')
 
         serializer = FAQCategorySerializer(faq_category, context={'request': request}).data
-        serializer['faq_list'] = FAQSerializer(faq_category.faq_category.all(), many=True).data
+        serializer['faq_list'] = FAQSerializer(faq_category.faq_category.all(), many=True,
+                                               context={'request': request}).data
         return Response(data={'result': serializer, 'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
