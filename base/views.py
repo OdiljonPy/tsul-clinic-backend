@@ -281,5 +281,5 @@ class BaseViewSet(ViewSet):
         tags=['Base'],
     )
     def get_manual_links(self, request):
-        link = ManualWebsite.objects.order_by('-created_at').first()
+        link = ManualWebsite.objects.last()
         return Response({'response': getattr(link, 'youtube_link', ''), 'ok': True}, status=status.HTTP_200_OK)
