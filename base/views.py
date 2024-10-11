@@ -39,7 +39,8 @@ from .serializers import (
     ServicesSerializer,
     AdditionalLinksSerializer,
     BannerSerializer,
-    PartnersSerializer, FAQCategorySerializer, ProjectsSerializer, AchievementsImages, AchievementsSerializer
+    PartnersSerializer, FAQCategorySerializer, ProjectsSerializer, AchievementsImages, AchievementsSerializer,
+    FAQCategoryDetailSerializer
 )
 
 
@@ -166,7 +167,7 @@ class BaseViewSet(ViewSet):
     @swagger_auto_schema(
         operation_summary="FAQ category detail",
         operation_description='FAQ category detail',
-        responses={200: FAQCategorySerializer()},
+        responses={200: FAQCategoryDetailSerializer()},
         tags=['Base'],
     )
     def faq_category_detail(self, request, pk):
@@ -174,20 +175,9 @@ class BaseViewSet(ViewSet):
         if not faq_category:
             raise CustomApiException(error_code=ErrorCodes.NOT_FOUND, message='FAQ category not found')
 
-        serializer = FAQCategorySerializer(faq_category, context={'request': request}).data
-        serializer['faq_list'] = FAQSerializer(faq_category.faq_category.all(), many=True,
-                                               context={'request': request}).data
-        return Response(data={'result': serializer, 'ok': True}, status=status.HTTP_200_OK)
+        serializer = FAQCategoryDetailSerializer(faq_category, context={'request': request})
+        return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        operation_summary='Frequently Asked Question list',
-        responses={200: FAQSerializer(many=True)},
-        tags=['Base'],
-    )
-    def list_faq(self, request):
-        faq = FAQ.objects.filter(is_published=True).order_by('-created_at')
-        return Response({'response': FAQSerializer(faq, many=True, context={'request': request}).data, 'ok': True},
-                        status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary='About Us',
