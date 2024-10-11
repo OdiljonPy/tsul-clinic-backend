@@ -121,15 +121,7 @@ class PartnersViewSet(ViewSet):
         partners = Partners.objects.all()
         serialized_data = PartnersSerializer(partners, context={'request': request}, many=True).data
 
-        # Group by category using defaultdict
-        grouped_data = defaultdict(list)
-        for partner in serialized_data:
-            grouped_data[partner['category']].append(partner)
-
-        # Convert defaultdict to a standard dict and ensure all categories are included
-        response_data = {str(category): grouped_data.get(category, []) for category, _ in CHOICE_PARTNERS}
-
-        return Response({'response': response_data, 'ok': True}, status=status.HTTP_200_OK)
+        return Response({'response': serialized_data, 'ok': True}, status=status.HTTP_200_OK)
 
 
 class BaseViewSet(ViewSet):
