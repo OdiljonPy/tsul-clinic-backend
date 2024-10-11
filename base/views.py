@@ -162,7 +162,7 @@ class BaseViewSet(ViewSet):
     def list_faq_category(self, request):
         faq_category = FAQCategory.objects.all()
         serializer = FAQCategorySerializer(faq_category, many=True, context={'request': request})
-        return Response(data={'result': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
+        return Response(data={'response': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary="FAQ category detail",
