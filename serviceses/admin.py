@@ -22,17 +22,17 @@ class ReadyDocumentsTabularInline(admin.TabularInline):
 
 class MeetingLinkTabularInline(admin.TabularInline):
     model = MeetingLink
-    extra = 0
+    extra = 1
 
 
 class MeetingPhoneTabularInline(admin.TabularInline):
     model = MeetingPhone
-    extra = 0
+    extra = 1
 
 
 class MeetingLocationTabularInline(admin.TabularInline):
     model = MeetingLocation
-    extra = 0
+    extra = 1
 
 
 # @admin.register(DocumentCategory)
@@ -75,13 +75,17 @@ class MeetingOrderAdmin(admin.ModelAdmin):
     readonly_fields = ('order_number',)
 
     def get_inline_instances(self, request, obj=None):
-        inline_instances = []
-        if obj and obj.meeting_type == 1:
-            inline_instances.append(MeetingLinkTabularInline(self.model, self.admin_site))
-        elif obj and obj.meeting_type == 2:
-            inline_instances.append(MeetingPhoneTabularInline(self.model, self.admin_site))
-        elif obj and obj.meeting_type == 3:
-            inline_instances.append(MeetingLocationTabularInline(self.model, self.admin_site))
+        # Get the base inline instances, don't forget this line!
+        inline_instances = super().get_inline_instances(request, obj)
+
+        if obj:
+            if obj.meeting_type == 1:
+                inline_instances.append(MeetingLinkTabularInline(self.model, self.admin_site))
+            elif obj.meeting_type == 0:
+                inline_instances.append(MeetingPhoneTabularInline(self.model, self.admin_site))
+            elif obj.meeting_type == 2:
+                inline_instances.append(MeetingLocationTabularInline(self.model, self.admin_site))
+
         return inline_instances
 
 
