@@ -1,8 +1,11 @@
+from django.utils import timezone
+
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
+from django.contrib.auth.models import User
 from abstract_models import base_models
+from serviceses.utils import validate_uz_number
 from utils.notification_messages import get_message, MessageEnumCode
 from utils.send_notifications import message_create
 
@@ -77,6 +80,7 @@ class DocumentOrder(base_models.BaseModel):
     # document_category = models.ForeignKey(DocumentCategory, on_delete=models.SET_NULL, null=True,
     #                                       verbose_name="Категория документа")
     price = models.PositiveIntegerField(default=0, blank=True)
+    expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     document_type = models.CharField(max_length=255, null=True, verbose_name="Тип документа")
     customer_full_name = models.CharField(max_length=250, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
@@ -167,10 +171,13 @@ class MeetingOrder(base_models.BaseModel):
     meeting_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
                                         verbose_name="Цена встечи", default=0)
     language = models.CharField(max_length=3, null=True, blank=True, verbose_name='язык')
+    expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     short_description = models.CharField(max_length=255, null=True, blank=True, verbose_name='краткое описание')
     meeting_status = models.IntegerField(default=0, choices=MEETING_ORDER_STATUS, verbose_name="Статус встречи")
     meeting_type = models.IntegerField(choices=MEETING_ORDER_TYPES, verbose_name="Тип встречи")
-    meeting_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи")
+    meeting_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи", default=timezone.now())
+    meeting_end_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи",
+                                            default=timezone.now() + timezone.timedelta(minutes=30))
 
     def __str__(self):
         return self.customer_full_name
@@ -262,6 +269,27 @@ def create_meeting_notification(sender, instance, created, **kwargs):
                     recipient=instance.customer_phone,
                     user_id=instance.id
                 )
+
+
+class MeetingLink(models.Model):
+    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='link')
+    link = models.URLField()
+    is_send_sms = models.BooleanField(default=False)
+
+
+class MeetingPhone(models.Model):
+    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='phone')
+    phone_number = models.CharField(max_length=14, validators=[validate_uz_number])
+    full_name = models.CharField(max_length=255)
+    is_send_sms = models.BooleanField(default=False)
+
+
+class MeetingLocation(models.Model):
+    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='location')
+    location_name = models.CharField(max_length=255)
+    location_url = models.URLField()
+
+
 
 
 class Contacts(base_models.BaseModel):

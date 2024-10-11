@@ -11,6 +11,13 @@ CHOICE_PARTNERS = (
 )
 
 
+class ManualWebsite(models.Model):
+    youtube_link = models.URLField()
+
+    def __str__(self):
+        return str(self.id)
+
+
 class Banner(base_models.BaseModel):
     text = models.CharField(max_length=150, verbose_name="Текст")
     image = models.ImageField(upload_to='banners/', verbose_name="Изображение")

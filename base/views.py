@@ -23,7 +23,7 @@ from .models import (
     Partners,
     CHOICE_PARTNERS,
     FAQCategory,
-    Projects, Achievements
+    Projects, Achievements, ManualWebsite
 )
 from .repository.get_news import get_news
 from .serializers import (
@@ -284,3 +284,12 @@ class BaseViewSet(ViewSet):
         achievements = Achievements.objects.all()
         return Response({'response': AchievementsSerializer(achievements, many=True, context={'request': request}).data,
                          'ok': True}, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary='Manual link',
+        responses={200: 'response:youtube_url'},
+        tags=['Base'],
+    )
+    def get_manual_links(self, request):
+        link = ManualWebsite.objects.order_by('-created_at').first()
+        return Response({'response': getattr(link, 'youtube_link', ''), 'ok': True}, status=status.HTTP_200_OK)

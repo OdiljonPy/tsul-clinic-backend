@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import DocumentOrder, MeetingOrder, Contacts, ReadyDocuments, Complaint
+from .models import DocumentOrder, MeetingOrder, Contacts, ReadyDocuments, Complaint, MeetingLink, MeetingPhone, \
+    MeetingLocation
 
 
 # admin.site.unregister(Theme)
@@ -17,6 +18,21 @@ class ComplaintAdminTabularInline(admin.TabularInline):
 class ReadyDocumentsTabularInline(admin.TabularInline):
     model = ReadyDocuments
     extra = 1
+
+
+class MeetingLinkTabularInline(admin.TabularInline):
+    model = MeetingLink
+    extra = 0
+
+
+class MeetingPhoneTabularInline(admin.TabularInline):
+    model = MeetingPhone
+    extra = 0
+
+
+class MeetingLocationTabularInline(admin.TabularInline):
+    model = MeetingLocation
+    extra = 0
 
 
 # @admin.register(DocumentCategory)
@@ -57,6 +73,16 @@ class MeetingOrderAdmin(admin.ModelAdmin):
     search_fields = ('id', 'order_number', 'customer_full_name', 'customer_phone')
     list_filter = ('meeting_type', 'meeting_time', 'meeting_status')
     readonly_fields = ('order_number',)
+
+    def get_inline_instances(self, request, obj=None):
+        inline_instances = []
+        if obj and obj.meeting_type == 1:
+            inline_instances.append(MeetingLinkTabularInline(self.model, self.admin_site))
+        elif obj and obj.meeting_type == 2:
+            inline_instances.append(MeetingPhoneTabularInline(self.model, self.admin_site))
+        elif obj and obj.meeting_type == 3:
+            inline_instances.append(MeetingLocationTabularInline(self.model, self.admin_site))
+        return inline_instances
 
 
 @admin.register(Contacts)
