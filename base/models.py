@@ -266,7 +266,7 @@ class AchievementsImages(base_models.BaseModel):
     image = models.ImageField(upload_to='achievements/', verbose_name="Изображение")
 
     def __str__(self):
-        return self.achievement.id
+        return str(self.achievement.id)
 
     class Meta:
         verbose_name = "Изображение достижения"
