@@ -227,6 +227,7 @@ class Partners(base_models.BaseModel):
 
 
 class Projects(base_models.BaseModel):
+    name = models.CharField(max_length=100, verbose_name='название проекта', null=True, blank=True)
     short_description = models.CharField(max_length=255, verbose_name='краткое описание')
     image = models.ImageField(upload_to='project/', verbose_name='изображение')
     youtube_url = models.URLField(null=True, blank=True, verbose_name="Ютуб url")

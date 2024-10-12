@@ -284,10 +284,11 @@ class ProjectsSerializer(serializers.ModelSerializer):
             language = request.META.get('HTTP_ACCEPT_LANGUAGE')
 
         self.fields['short_description'] = serializers.CharField(source=f'short_description_{language}')
+        self.fields['name'] = serializers.CharField(source=f'name_{language}')
 
     class Meta:
         model = Projects
-        fields = ('id', 'short_description', 'image', 'telegram_url', 'instagram_url', 'youtube_url', 'website_url',
+        fields = ('id', 'short_description', 'name','image', 'telegram_url', 'instagram_url', 'youtube_url', 'website_url',
                   'twitter_url', 'linkedin_url')
 
 

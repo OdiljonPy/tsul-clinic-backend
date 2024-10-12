@@ -14,8 +14,10 @@ from .models import (
     FAQCategory, Projects, Achievements
 )
 
+
 class FAQCategoryTranslationOptions(TranslationOptions):
     fields = ('name',)
+
 
 class BannerTranslationOptions(TranslationOptions):
     fields = ('text',)
@@ -31,6 +33,7 @@ class TeamTranslationOptions(TranslationOptions):
 
 class PartnersTranslationOptions(TranslationOptions):
     fields = ('company_name',)
+
 
 class CustomerOpinionTranslationOptions(TranslationOptions):
     fields = ('full_name', 'opinion')
@@ -59,14 +62,16 @@ class ServicesTranslationOptions(TranslationOptions):
 class AdditionalLinksTranslationOptions(TranslationOptions):
     fields = ('name',)
 
+
 class ProjectsTranslationOptions(TranslationOptions):
-    fields = ('short_description',)
+    fields = ('short_description', 'name')
+
 
 class AchievementsOptions(TranslationOptions):
     fields = ('short_description',)
 
 
-translator.register(Banner,BannerTranslationOptions)
+translator.register(Banner, BannerTranslationOptions)
 translator.register(News, NewsTranslationOptions)
 translator.register(Team, TeamTranslationOptions)
 translator.register(Partners, PartnersTranslationOptions)
