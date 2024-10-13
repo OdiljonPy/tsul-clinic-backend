@@ -21,5 +21,6 @@ urlpatterns = [
     path('banners/', BaseViewSet.as_view({'get': 'list_banner'}), name='banners'),
     path('projects/', BaseViewSet.as_view({'get': 'get_projects'}), name='projects'),
     path('achievement/', BaseViewSet.as_view({'get': 'list_achievement'}), name='list_achievement'),
+    path('manual/', BaseViewSet.as_view({'get': 'get_manual_links'}), name='list_achievement'),
 
 ]
