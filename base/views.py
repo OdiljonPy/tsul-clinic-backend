@@ -40,7 +40,7 @@ from .serializers import (
     AdditionalLinksSerializer,
     BannerSerializer,
     PartnersSerializer, FAQCategorySerializer, ProjectsSerializer, AchievementsImages, AchievementsSerializer,
-    FAQCategoryDetailSerializer
+    FAQCategoryDetailSerializer, ManualWebsiteSerializer
 )
 
 
@@ -274,4 +274,4 @@ class BaseViewSet(ViewSet):
     )
     def get_manual_links(self, request):
         link = ManualWebsite.objects.last()
-        return Response({'response': getattr(link, 'youtube_link', ''), 'ok': True}, status=status.HTTP_200_OK)
+        return Response({'response': ManualWebsiteSerializer(link, context={'request':request}).data.get('youtube_link', ''), 'ok': True}, status=status.HTTP_200_OK)

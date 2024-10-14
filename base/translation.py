@@ -11,12 +11,16 @@ from .models import (
     Services,
     AdditionalLinks,
     Partners,
-    FAQCategory, Projects, Achievements
+    FAQCategory, Projects, Achievements,ManualWebsite
 )
 
 
 class FAQCategoryTranslationOptions(TranslationOptions):
     fields = ('name',)
+
+
+class ManualWebsiteTranslationOptions(TranslationOptions):
+    fields = ('youtube_link',)
 
 
 class BannerTranslationOptions(TranslationOptions):
@@ -85,3 +89,4 @@ translator.register(AdditionalLinks, AdditionalLinksTranslationOptions)
 translator.register(FAQCategory, FAQCategoryTranslationOptions)
 translator.register(Projects, ProjectsTranslationOptions)
 translator.register(Achievements, AchievementsOptions)
+translator.register(ManualWebsite, ManualWebsiteTranslationOptions)

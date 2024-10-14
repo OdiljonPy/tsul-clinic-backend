@@ -18,7 +18,7 @@ from .models import (
     Services,
     AdditionalLinks,
     Banner,
-    Partners, FAQCategory, Projects, Achievements, AchievementsImages
+    Partners, FAQCategory, Projects, Achievements, AchievementsImages, ManualWebsite
 )
 
 
@@ -185,6 +185,21 @@ class ServicesCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServicesCategory
         fields = ('id', 'name')
+
+
+class ManualWebsiteSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        language = 'ru'
+        if request and request.META.get('HTTP_ACCEPT_LANGUAGE') in settings.MODELTRANSLATION_LANGUAGES:
+            language = request.META.get('HTTP_ACCEPT_LANGUAGE')
+
+        self.fields['youtube_link'] = serializers.CharField(source=f'youtube_link_{language}')
+
+    class Meta:
+        model = ManualWebsite
+        fields = ('youtube_link',)
 
 
 class ServicesSerializer(serializers.ModelSerializer):
