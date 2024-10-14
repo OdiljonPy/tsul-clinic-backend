@@ -308,7 +308,7 @@ def send_meeting_notification(sender, instance, created, **kwargs):
 
         if isinstance(instance, MeetingLocation):
             send_notification(
-                f"MAslahat olish uchun ofis manzili: {instance.location_name} \nLink:{instance.location_url}  \n{instance.meeting.customer_phone}")
+                f"Maslahat olish uchun ofis manzili: {instance.location_name} \nLink:{instance.location_url}  \n{instance.meeting.customer_phone}")
 
 
     elif not created and instance.is_send_sms and hasattr(instance, '_old_data'):
