@@ -51,7 +51,7 @@ class DocumentOrderViewSet(ViewSet):
         tags=['DocumentOrder Page'],
     )
     def get_check_page(self, request):
-        check_page = DocumentOrderPage.objects.order_by('-created_at')
+        check_page = DocumentOrderPage.objects.order_by('-created_at').first()
         return Response({'response': getattr(check_page, 'is_active', False), 'ok': True}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
