@@ -7,7 +7,7 @@ from django.utils import timezone
 from abstract_models import base_models
 from serviceses.utils import validate_uz_number
 from utils.notification_messages import get_message, MessageEnumCode
-from utils.send_notifications import message_create
+from utils.send_notifications import message_create, send_notification
 
 DOCUMENT_ORDER_STATUS = (
     (0, 'ОЖИДАЕТСЯ ПЛАТЕЖ'),
@@ -132,6 +132,10 @@ class ReadyDocuments(base_models.BaseModel):
         ordering = ('created_at',)
 
 
+def default_meeting_end_time():
+    return timezone.now() + timezone.timedelta(minutes=30)
+
+
 class MeetingOrder(base_models.BaseModel):
     order_number = models.BigIntegerField(blank=True, null=True, verbose_name="Номен заказа")
     customer_full_name = models.CharField(max_length=150, verbose_name="Полное имя клиента")
@@ -145,8 +149,8 @@ class MeetingOrder(base_models.BaseModel):
     meeting_status = models.IntegerField(default=0, choices=MEETING_ORDER_STATUS, verbose_name="Статус встречи")
     meeting_type = models.IntegerField(choices=MEETING_ORDER_TYPES, verbose_name="Тип встречи")
     meeting_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи", default=timezone.now())
-    meeting_end_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи",
-                                            default=timezone.now() + timezone.timedelta(minutes=30))
+    meeting_end_time = models.TimeField(null=True, blank=True, verbose_name="Время встречи",
+                                        default=default_meeting_end_time)
 
     def __str__(self):
         return self.customer_full_name
@@ -266,10 +270,59 @@ class MeetingLocation(models.Model):
                                    verbose_name="Встреча")
     location_name = models.CharField(max_length=255, verbose_name="Название локации")
     location_url = models.URLField(verbose_name="Локация url")
+    is_send_sms = models.BooleanField(default=False, verbose_name="Смс отправлен")
 
     class Meta:
         verbose_name = "Локация встречи"
         verbose_name_plural = "Локации встреч"
+
+
+@receiver(pre_save, sender=MeetingLink)
+@receiver(pre_save, sender=MeetingPhone)
+@receiver(pre_save, sender=MeetingLocation)
+def track_old_instance(sender, instance, **kwargs):
+    if instance.pk:
+        old_instance = sender.objects.get(pk=instance.pk)
+        instance._old_data = {
+            'link': old_instance.link if hasattr(old_instance, 'link') else None,
+            'phone_number': old_instance.phone_number if hasattr(old_instance, 'phone_number') else None,
+            'location_name': old_instance.location_name if hasattr(old_instance, 'location_name') else None,
+            'location_url': old_instance.location_url if hasattr(old_instance, 'location_url') else None,
+            'is_send_sms': old_instance.is_send_sms if hasattr(old_instance, 'is_send_sms') else None,
+        }
+
+
+# Signal for sending SMS when is_send_sms is True or data changes
+@receiver(post_save, sender=MeetingLink)
+@receiver(post_save, sender=MeetingPhone)
+@receiver(post_save, sender=MeetingLocation)
+def send_meeting_notification(sender, instance, created, **kwargs):
+    if created and instance.is_send_sms or instance.is_send_sms and hasattr(instance,
+                                                                            '_old_data') and instance._old_data.get(
+        'is_send_sms') is False:
+        if isinstance(instance, MeetingLink):
+            send_notification(f"Onlayn Uchrashuv uchun link {instance.link}  \n{instance.meeting.customer_phone}")
+        if isinstance(instance, MeetingPhone):
+            send_notification(
+                f"Telefon orqali maslahat olish uchun telefon raqam {instance.phone_number}  \n{instance.meeting.customer_phone}")
+
+        if isinstance(instance, MeetingLocation):
+            send_notification(
+                f"MAslahat olish uchun ofis manzili: {instance.location_name} \nLink:{instance.location_url}  \n{instance.meeting.customer_phone}")
+
+
+    elif not created and instance.is_send_sms and hasattr(instance, '_old_data'):
+        # Send SMS on update if data changed
+        if isinstance(instance, MeetingLink) and instance.link != instance._old_data['link']:
+            send_notification(f"Uchrashuv linki o'zgardi: {instance.link} \n{instance.meeting.customer_phone}")
+
+        if isinstance(instance, MeetingPhone) and instance.phone_number != instance._old_data['phone_number']:
+            send_notification(
+                f"Uchrashuv telefon raqami o'zgardi: {instance.phone_number}\n{instance.meeting.customer_phone}")
+
+        if isinstance(instance, MeetingLocation) and instance.location_name != instance._old_data[
+            'location_name'] or instance.location_url != instance._old_data['location_url']:
+            send_notification(f"Uchrashuv manzili o'zgardi: {instance.location_name}\n{instance.meeting.customer_phone}")
 
 
 class Contacts(base_models.BaseModel):
