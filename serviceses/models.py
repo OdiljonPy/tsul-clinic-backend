@@ -64,7 +64,7 @@ class DocumentOrder(base_models.BaseModel):
     class Meta:
         verbose_name = "Заказ документа"
         verbose_name_plural = "Заказы документов"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
     def save(self, *args, **kwargs):
         if self.order_number is None:
@@ -244,7 +244,7 @@ def create_meeting_notification(sender, instance, created, **kwargs):
                 )
 
 
-class MeetingLink(models.Model):
+class MeetingLink(base_models.BaseModel):
     meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='link', verbose_name="Встреча")
     link = models.URLField(verbose_name="Ссылка")
     is_send_sms = models.BooleanField(default=False, verbose_name="Смс отправлен")
@@ -252,9 +252,10 @@ class MeetingLink(models.Model):
     class Meta:
         verbose_name = "Ссылка встречи"
         verbose_name_plural = "Ссылки встреч"
+        ordering = ('-created_at',)
 
 
-class MeetingPhone(models.Model):
+class MeetingPhone(base_models.BaseModel):
     meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='phone', verbose_name="Встреча")
     phone_number = models.CharField(max_length=14, validators=[validate_uz_number], verbose_name="Номер телефона")
     full_name = models.CharField(max_length=255, verbose_name="Полное имя")
@@ -263,9 +264,10 @@ class MeetingPhone(models.Model):
     class Meta:
         verbose_name = "Телефонная встреча"
         verbose_name_plural = "Телефонные встречи"
+        ordering = ('-created_at',)
 
 
-class MeetingLocation(models.Model):
+class MeetingLocation(base_models.BaseModel):
     meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, related_name='location',
                                    verbose_name="Встреча")
     location_name = models.CharField(max_length=255, verbose_name="Название локации")
@@ -275,6 +277,7 @@ class MeetingLocation(models.Model):
     class Meta:
         verbose_name = "Локация встречи"
         verbose_name_plural = "Локации встреч"
+        ordering = ('-created_at',)
 
 
 @receiver(pre_save, sender=MeetingLink)
@@ -322,7 +325,8 @@ def send_meeting_notification(sender, instance, created, **kwargs):
 
         if isinstance(instance, MeetingLocation) and instance.location_name != instance._old_data[
             'location_name'] or instance.location_url != instance._old_data['location_url']:
-            send_notification(f"Uchrashuv manzili o'zgardi: {instance.location_name}\n{instance.meeting.customer_phone}")
+            send_notification(
+                f"Uchrashuv manzili o'zgardi: {instance.location_name}\n{instance.meeting.customer_phone}")
 
 
 class Contacts(base_models.BaseModel):
@@ -364,4 +368,4 @@ class DocumentOrderPage(base_models.BaseModel):
     class Meta:
         verbose_name = 'Страница заказа документа'
         verbose_name_plural = 'Страница заказов документов'
-        ordering = ("created_at",)
+        ordering = ("-created_at",)

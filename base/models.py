@@ -12,7 +12,7 @@ CHOICE_PARTNERS = (
 )
 
 
-class ManualWebsite(models.Model):
+class ManualWebsite(base_models.BaseModel):
     youtube_link = models.URLField(verbose_name="Ютуб видео ссылка")
 
     def __str__(self):
@@ -21,6 +21,7 @@ class ManualWebsite(models.Model):
     class Meta:
         verbose_name = "Правило прользования вебсайтом"
         verbose_name_plural = "Правила прользования вебсайтом"
+        ordering = ('-created_at',)
 
 
 class Banner(base_models.BaseModel):
@@ -33,7 +34,7 @@ class Banner(base_models.BaseModel):
     class Meta:
         verbose_name = "Баннер"
         verbose_name_plural = "Баннеры"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class News(base_models.BaseModel):
@@ -50,7 +51,7 @@ class News(base_models.BaseModel):
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class Team(base_models.BaseModel):
@@ -65,7 +66,7 @@ class Team(base_models.BaseModel):
     class Meta:
         verbose_name = "Команда"
         verbose_name_plural = "Команды"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class Statistics(base_models.BaseModel):
@@ -79,13 +80,14 @@ class Statistics(base_models.BaseModel):
     class Meta:
         verbose_name = "Статистика"
         verbose_name_plural = "Статистики"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class CustomerOpinion(base_models.BaseModel):
     full_name = models.CharField(max_length=150, verbose_name="Полное имя")
     opinion = models.TextField(max_length=800, verbose_name="Мнение", null=True, blank=True)
-    video = models.FileField(null=True, blank=True, upload_to='customer_opinion/', verbose_name="Видео", validators=[validate_video_file])
+    video = models.FileField(upload_to='customer_opinion/', verbose_name="Видео",
+                             validators=[validate_video_file])
 
     def __str__(self):
         return self.full_name
@@ -105,11 +107,11 @@ class FAQCategory(base_models.BaseModel):
     class Meta:
         verbose_name = "Категория часто задаваемого вопроса"
         verbose_name_plural = "Категории часто задоваемых вопросов"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class FAQ(base_models.BaseModel):
-    faq_category = models.ForeignKey(FAQCategory, on_delete=models.CASCADE, blank=True, null=True,
+    faq_category = models.ForeignKey(FAQCategory, on_delete=models.CASCADE,
                                      verbose_name="Категория ЧЗВ", related_name='faq_category')
     question = models.TextField(max_length=500, verbose_name="Вопрос")
     answer = models.TextField(max_length=1000, verbose_name="Ответ")
@@ -121,7 +123,7 @@ class FAQ(base_models.BaseModel):
     class Meta:
         verbose_name = "Часто задаваемый вопрос"
         verbose_name_plural = "Часто задаваемые вопросы"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class AboutUs(base_models.BaseModel):
@@ -135,7 +137,7 @@ class AboutUs(base_models.BaseModel):
     class Meta:
         verbose_name = "О нас"
         verbose_name_plural = "О нас"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class Info(base_models.BaseModel):
@@ -143,7 +145,7 @@ class Info(base_models.BaseModel):
     instagram = models.URLField(default='www.instagram.com', verbose_name="Инстаграм")
     twitter = models.URLField(default='www.twitter.com', verbose_name="Твиттер")
     linkedin = models.URLField(default='www.linkedin.com', verbose_name="Линкедин")
-    telegram = models.URLField(default='www.telegram.com', verbose_name="Телеграм")
+    telegram = models.URLField(default='www.telegram.org', verbose_name="Телеграм")
     phone_number = models.CharField(max_length=50, verbose_name="Номер телефона")
 
     def __str__(self):
@@ -152,11 +154,11 @@ class Info(base_models.BaseModel):
     class Meta:
         verbose_name = "Информация"
         verbose_name_plural = "Информации"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class OfficeAddress(base_models.BaseModel):
-    info = models.ForeignKey(Info, on_delete=models.CASCADE, related_name='office_address', null=True,
+    info = models.ForeignKey(Info, on_delete=models.CASCADE, related_name='office_address',
                              verbose_name="Информация")
     address_name = models.CharField(max_length=250, verbose_name="Название адреса")
     latitude = models.FloatField(verbose_name="Широта")
@@ -169,7 +171,7 @@ class OfficeAddress(base_models.BaseModel):
     class Meta:
         verbose_name = "Адрес офиса"
         verbose_name_plural = "Адреса офисов"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class ServicesCategory(base_models.BaseModel):
@@ -181,7 +183,7 @@ class ServicesCategory(base_models.BaseModel):
     class Meta:
         verbose_name = "Категория сервиса"
         verbose_name_plural = "Категории сервисов"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class Services(base_models.BaseModel):
@@ -196,7 +198,7 @@ class Services(base_models.BaseModel):
     class Meta:
         verbose_name = "Сервис"
         verbose_name_plural = "Сервисы"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class AdditionalLinks(base_models.BaseModel):
@@ -210,7 +212,7 @@ class AdditionalLinks(base_models.BaseModel):
     class Meta:
         verbose_name = "Дополнительная ссылка"
         verbose_name_plural = "Дополнительные ссылки"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class Partners(base_models.BaseModel):
@@ -223,7 +225,7 @@ class Partners(base_models.BaseModel):
     class Meta:
         verbose_name = "Партнер"
         verbose_name_plural = "Партнеры"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class Projects(base_models.BaseModel):
@@ -243,7 +245,8 @@ class Projects(base_models.BaseModel):
     class Meta:
         verbose_name = 'Проэкт'
         verbose_name_plural = 'Проэкты'
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
+
 
 class Achievements(base_models.BaseModel):
     short_description = models.CharField(max_length=255, verbose_name='краткое описание')
@@ -258,7 +261,7 @@ class Achievements(base_models.BaseModel):
     class Meta:
         verbose_name = "Достижение"
         verbose_name_plural = "Достижения"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
 class AchievementsImages(base_models.BaseModel):
@@ -271,4 +274,4 @@ class AchievementsImages(base_models.BaseModel):
     class Meta:
         verbose_name = "Изображение достижения"
         verbose_name_plural = "Изображения достижений"
-        ordering = ('created_at',)
+        ordering = ('-created_at',)

@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -13,7 +11,6 @@ from .models import (
     Team,
     Statistics,
     CustomerOpinion,
-    FAQ,
     AboutUs,
     Info,
     ServicesCategory,
@@ -21,7 +18,6 @@ from .models import (
     AdditionalLinks,
     Banner,
     Partners,
-    CHOICE_PARTNERS,
     FAQCategory,
     Projects, Achievements, ManualWebsite
 )
@@ -32,14 +28,13 @@ from .serializers import (
     TeamSerializer,
     StatisticsSerializer,
     CustomerOpinionSerializer,
-    FAQSerializer,
     AboutUsSerializer,
     InfoSerializer,
     ServicesCategorySerializer,
     ServicesSerializer,
     AdditionalLinksSerializer,
     BannerSerializer,
-    PartnersSerializer, FAQCategorySerializer, ProjectsSerializer, AchievementsImages, AchievementsSerializer,
+    PartnersSerializer, FAQCategorySerializer, ProjectsSerializer, AchievementsSerializer,
     FAQCategoryDetailSerializer, ManualWebsiteSerializer
 )
 
@@ -103,7 +98,7 @@ class TeamViewSet(ViewSet):
     )
     def list(self, request):
         type = request.query_params.get('type')
-        if  type and type == 'volunteer':
+        if type and type == 'volunteer':
             teams = Team.objects.filter(is_volunteer=True)
         else:
             teams = Team.objects.filter(is_volunteer=False)
@@ -169,7 +164,6 @@ class BaseViewSet(ViewSet):
 
         serializer = FAQCategoryDetailSerializer(faq_category, context={'request': request})
         return Response(data={'response': serializer.data, 'ok': True}, status=status.HTTP_200_OK)
-
 
     @swagger_auto_schema(
         operation_summary='About Us',
@@ -273,5 +267,7 @@ class BaseViewSet(ViewSet):
         tags=['Base'],
     )
     def get_manual_links(self, request):
-        link = ManualWebsite.objects.last()
-        return Response({'response': ManualWebsiteSerializer(link, context={'request':request}).data.get('youtube_link', ''), 'ok': True}, status=status.HTTP_200_OK)
+        link = ManualWebsite.objects.order_by('-created_at').first()
+        return Response(
+            {'response': ManualWebsiteSerializer(link, context={'request': request}).data.get('youtube_link', ''),
+             'ok': True}, status=status.HTTP_200_OK)

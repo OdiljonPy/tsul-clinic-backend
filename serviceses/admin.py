@@ -10,7 +10,6 @@ class ComplaintAdminTabularInline(admin.TabularInline):
     extra = 0
 
 
-
 class ReadyDocumentsTabularInline(admin.TabularInline):
     model = ReadyDocuments
     extra = 1

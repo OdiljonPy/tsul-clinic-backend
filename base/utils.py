@@ -1,5 +1,6 @@
-from django.core.exceptions import ValidationError
 import os
+
+from django.core.exceptions import ValidationError
 
 
 def validate_video_file(file):

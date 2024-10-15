@@ -13,20 +13,6 @@ from .serializers import (
 )
 
 
-# class DocumentCategoryViewSet(ViewSet):
-#     @swagger_auto_schema(
-#         operation_summary='Get Document Categories',
-#         responses={200: DocumentCategorySerializer(many=True)},
-#         tags=['DocumentCategory'],
-#     )
-#     def list(self, request):
-#         categories = DocumentCategory.objects.filter(is_active=True, documenttype__isnull=False)
-#         return Response(
-#             {"response": DocumentCategorySerializer(categories, many=True, context={"request": request}).data,
-#              'ok': True},
-#             status=status.HTTP_200_OK)
-
-
 class DocumentOrderViewSet(ViewSet):
     @swagger_auto_schema(
         operation_summary='Create order for documents',
