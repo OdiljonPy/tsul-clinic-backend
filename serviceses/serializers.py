@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from django.conf import settings
+
 from .models import (
     DocumentOrder,
     MeetingOrder,
-    Contacts, ReadyDocuments, Complaint
+    Contacts, ReadyDocuments, Complaint, ServiceEvaluation
 )
 
 
@@ -73,8 +73,9 @@ class MeetingOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingOrder
         fields = (
-        'id', 'order_number', 'language', 'short_description', 'customer_full_name', 'customer_phone', 'customer_email',
-        'meeting_type')
+            'id', 'order_number', 'language', 'short_description', 'customer_full_name', 'customer_phone',
+            'customer_email',
+            'meeting_type')
 
     def create(self, validated_data):
         validated_data.pop('order_number', None)
@@ -92,3 +93,9 @@ class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complaint
         fields = ['id', 'complaint', 'order_document']
+
+
+class ServiceEvaluationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceEvaluation
+        fields = ['id', 'meeting', 'rating', 'description']

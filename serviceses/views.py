@@ -2,29 +2,16 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from yaml import serialize
 
 from exceptions.error_messages import ErrorCodes
 from exceptions.exception import CustomApiException
-from .models import DocumentOrder, DocumentOrderPage
+from .models import DocumentOrder, DocumentOrderPage, MeetingOrder, ServiceEvaluation
 from .serializers import (
     DocumentOrderSerializer,
     MeetingOrderSerializer,
-    ContactsSerializer, ComplaintSerializer
+    ContactsSerializer, ComplaintSerializer, ServiceEvaluationSerializer
 )
-
-
-# class DocumentCategoryViewSet(ViewSet):
-#     @swagger_auto_schema(
-#         operation_summary='Get Document Categories',
-#         responses={200: DocumentCategorySerializer(many=True)},
-#         tags=['DocumentCategory'],
-#     )
-#     def list(self, request):
-#         categories = DocumentCategory.objects.filter(is_active=True, documenttype__isnull=False)
-#         return Response(
-#             {"response": DocumentCategorySerializer(categories, many=True, context={"request": request}).data,
-#              'ok': True},
-#             status=status.HTTP_200_OK)
 
 
 class DocumentOrderViewSet(ViewSet):
@@ -105,6 +92,32 @@ class ComplaintViewSet(ViewSet):
         data = request.data
         data['order_document'] = pk
         serializer = ComplaintSerializer(data=data, context={'request': request})
+        if not serializer.is_valid():
+            raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
+        serializer.save()
+        return Response({'response': serializer.data, 'ok': True}, status=status.HTTP_201_CREATED)
+
+
+class EvaluationViewSet(ViewSet):
+    @swagger_auto_schema(
+        responses={200: "response:True/False"},
+        tags=['Evaluation'],
+    )
+    def check_evaluation(self, request, pk):
+        return Response({"response": ServiceEvaluation.objects.filter(meeting_id=pk).exists(), 'ok': True},
+                        status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        request_body=ServiceEvaluationSerializer,
+        responses={201: ServiceEvaluationSerializer()},
+        tags=['Evaluation'],
+    )
+    def create(self, request, pk):
+        meeting = MeetingOrder.objects.filter(pk=pk).first()
+        if not meeting:
+            raise CustomApiException(ErrorCodes.NOT_FOUND)
+        serializer = ServiceEvaluationSerializer(data={**request.data, 'meeting':pk},
+                                                 context={'request': request})
         if not serializer.is_valid():
             raise CustomApiException(ErrorCodes.VALIDATION_FAILED, message=serializer.errors)
         serializer.save()
