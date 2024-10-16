@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 from abstract_models import base_models
-from serviceses.utils import validate_uz_number
+from serviceses.utils import validate_uz_number, validate_rating
 from utils.notification_messages import get_message, MessageEnumCode
 from utils.send_notifications import message_create, send_notification
 
@@ -369,3 +369,18 @@ class DocumentOrderPage(base_models.BaseModel):
         verbose_name = 'Страница заказа документа'
         verbose_name_plural = 'Страница заказов документов'
         ordering = ("-created_at",)
+
+
+class ServiceEvaluation(base_models.BaseModel):
+    meeting = models.OneToOneField(MeetingOrder, on_delete=models.CASCADE, verbose_name="Встреча")
+
+    rating = models.IntegerField(validators=[validate_rating], verbose_name="Рейтинг")
+    description = models.TextField(verbose_name="Описание")
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = 'Оценка услуги'
+        verbose_name_plural = 'Оценки услуг'
+        ordering = ('-created_at',)
