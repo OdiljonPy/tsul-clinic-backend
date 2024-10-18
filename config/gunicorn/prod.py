@@ -1,7 +1,7 @@
 """Gunicorn *production* config file (suppose > prod.py)"""
 
 """Django WSGI application path in pattern MODULE_NAME:VARIABLE_NAME"""
-project_name = 'haq-backend'
+project_name = 'tsul-clinic-backend'
 wsgi_app = "config.wsgi:application"
 """The granularity of Error log outputs"""
 loglevel = "debug"
