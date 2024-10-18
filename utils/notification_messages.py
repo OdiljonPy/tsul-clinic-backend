@@ -1,6 +1,5 @@
 from enum import Enum
-from typing import Any
-from django.conf import settings
+
 
 class MessageEnumCode(Enum):
     CREATE = 1
@@ -22,10 +21,11 @@ MESSAGES = {
         'message': "{} raqamli video uchrashuv {} vaqtga belgilandi.\nBatafsil ma'lumot uchun saytga tashrif buyuring: {}"},
     5: {
         'message': "{} raqamli telefon orqali muloqot {} vaqtga belgilandi.\nBatafsil ma'lumot uchun saytga tashrif buyuring: {}"},
-    6: {'message': "{} raqamli konsultatsiya {} vaqtga belgilandi.\nBatafsil ma'lumot uchun saytga tashrif buyuring: {}"}
+    6: {
+        'message': "{} raqamli konsultatsiya {} vaqtga belgilandi.\nBatafsil ma'lumot uchun saytga tashrif buyuring: {}"}
 
 }
 
 
-def get_message(enum_code) -> dict[str, Any]:
+def get_message(enum_code):
     return MESSAGES.get(enum_code.value, {'message': None})
