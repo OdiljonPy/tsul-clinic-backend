@@ -12,8 +12,8 @@ def send_notification(message: str) -> None:
         print(f"Failed while sending request to telegram client: {e}")
 
 
-def message_create(message: dict[str, str], recipient, user_id, item1: str = "N/A", item2: str = settings.BASE_URL):
-    item2 =item2 or settings.BASE_URL
+def message_create(message, recipient, user_id, item1: str = "N/A", item2: str = settings.BASE_URL):
+    item2 = item2 or settings.BASE_URL
     message = message.get('message').format(*[item1, item2, settings.BASE_URL])
     send_message(message, recipient=recipient, user_id=user_id)
 
