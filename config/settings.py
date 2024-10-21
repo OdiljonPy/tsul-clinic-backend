@@ -184,6 +184,7 @@ SMS_USERNAME = os.getenv("SMS_USERNAME", '')
 SMS_PASSWORD = os.getenv("SMS_PASSWORD", '')
 BASE_URL = os.getenv('BASE_URL', '')
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Redirect all HTTP to HTTPS
@@ -193,11 +194,6 @@ SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-# Ensure browsers refuse to perform insecure requests
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
-# Use HSTS (HTTP Strict Transport Security) to enforce HTTPS
-SECURE_HSTS_SECONDS = 3600  # Adjust this as needed
+SECURE_HSTS_SECONDS = 31536000  # 1 yil
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
