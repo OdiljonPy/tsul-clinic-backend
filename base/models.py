@@ -143,8 +143,8 @@ class AboutUs(base_models.BaseModel):
 class Info(base_models.BaseModel):
     youtube = models.URLField(default='www.youtube.com', verbose_name="Ютуб")
     instagram = models.URLField(default='www.instagram.com', verbose_name="Инстаграм")
-    twitter = models.URLField(default='www.twitter.com', verbose_name="Твиттер")
-    linkedin = models.URLField(default='www.linkedin.com', verbose_name="Линкедин")
+    twitter = models.URLField(default='www.twitter.com', verbose_name="ТикТок")
+    linkedin = models.URLField(default='www.linkedin.com', verbose_name="Фейсбук")
     telegram = models.URLField(default='www.telegram.org', verbose_name="Телеграм")
     phone_number = models.CharField(max_length=50, verbose_name="Номер телефона")
 
@@ -236,8 +236,8 @@ class Projects(base_models.BaseModel):
     telegram_url = models.URLField(null=True, blank=True, verbose_name="Телеграм url")
     instagram_url = models.URLField(null=True, blank=True, verbose_name="Инстаграм url")
     website_url = models.URLField(null=True, blank=True, verbose_name="Вебсайт url")
-    twitter_url = models.URLField(null=True, blank=True, verbose_name="Твиттер url")
-    linkedin_url = models.URLField(null=True, blank=True, verbose_name="Линкедин url")
+    twitter_url = models.URLField(null=True, blank=True, verbose_name="ТикТок url")
+    linkedin_url = models.URLField(null=True, blank=True, verbose_name="Фейсбук url")
 
     def __str__(self):
         return self.short_description

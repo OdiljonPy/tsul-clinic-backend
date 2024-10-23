@@ -29,3 +29,15 @@ MESSAGES = {
 
 def get_message(enum_code):
     return MESSAGES.get(enum_code.value, {'message': None})
+
+
+def create_message_telegram(customer_full_name, phone_number, language, type, description, url):
+    message = ("Tsul Klinik\n"
+               f"Murojatchi F.I.O: {customer_full_name}\n"
+               f"Murojatchi telefon raqami: {phone_number}\n"
+               f"Murojat haqida: {description}\n"
+               f"Murojat tili: {language}\n"
+               f"Murojat turi: {type}"
+               f"Url: {url}")
+
+    return message
