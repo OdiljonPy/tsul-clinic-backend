@@ -3,10 +3,10 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
-
+from django.conf import settings
 from abstract_models import base_models
 from serviceses.utils import validate_uz_number, validate_rating
-from utils.notification_messages import get_message, MessageEnumCode
+from utils.notification_messages import get_message, MessageEnumCode, create_message_telegram
 from utils.send_notifications import message_create, send_notification
 
 DOCUMENT_ORDER_STATUS = (
@@ -384,3 +384,40 @@ class ServiceEvaluation(base_models.BaseModel):
         verbose_name = 'Оценка услуги'
         verbose_name_plural = 'Оценки услуг'
         ordering = ('-created_at',)
+
+@receiver(post_save, sender=DocumentOrder)
+@receiver(post_save, sender=MeetingOrder)
+@receiver(post_save, sender=Contacts)
+def send_telegram_message(sender, instance, created, **kwargs):
+    if created:
+        if isinstance(instance, DocumentOrder):
+            order_type = "Document Order"
+            url = f'{settings.CSRF_TRUSTED_ORIGINS[0]}/admin/serviceses/documentorder/{instance.pk}/'
+            description = instance.customer_message
+            language = "null"
+            phone_number = instance.customer_phone
+
+        elif isinstance(instance, MeetingOrder):
+            order_type = "Meeting Order " + instance.get_meeting_type_display() if hasattr(instance, 'get_meeting_type_display') else str(instance.meeting_type)
+            url = f'{settings.CSRF_TRUSTED_ORIGINS[0]}/admin/serviceses/meetingorder/{instance.pk}/'
+            description = instance.short_description if instance.short_description else "Noma'lum"
+            language = instance.language if instance.language else "Uz"
+            phone_number = instance.customer_phone
+
+        elif isinstance(instance, Contacts):
+            order_type = "Contact"
+            description = instance.message
+            language = "null"
+            url = f'{settings.CSRF_TRUSTED_ORIGINS[0]}/admin/serviceses/contacts/{instance.pk}/'
+            phone_number = instance.phone
+
+        message = create_message_telegram(
+            customer_full_name=getattr(instance, 'customer_full_name', '') or getattr(instance,'full_name'),
+            phone_number=phone_number,
+            language=language,
+            type=f'{order_type}\n',
+            description=description,
+            url=url
+        )
+
+        send_notification(message)
