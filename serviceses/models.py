@@ -10,7 +10,7 @@ from utils.notification_messages import get_message, MessageEnumCode, create_mes
 from utils.send_notifications import message_create, send_notification
 
 DOCUMENT_ORDER_STATUS = (
-    (0, 'ОЖИДАЕТСЯ ПЛАТЕЖ'),
+    (0, 'ОЖИДАЕТСЯ'),
     (1, 'ДОКУМЕНТ ПРИНЯТ'),
     (2, 'РАССМАТРИВАЕТЬСЯ'),
     (3, 'ЗАВЕРШЕННЫЙ'),
@@ -24,7 +24,7 @@ MEETING_ORDER_TYPES = (
 )
 
 MEETING_ORDER_STATUS = (
-    (0, 'ОЖИДАЕТСЯ ПЛАТЕЖ'),
+    (0, 'ОЖИДАЕТСЯ'),
     (1, 'ПРИНЯТ'),
     (2, 'ЗАВЕРШЕННЫЙ'),
     (3, 'ОТМЕНЕНО')
@@ -50,7 +50,7 @@ class DocumentOrder(base_models.BaseModel):
     order_number = models.BigIntegerField(blank=True, null=True, verbose_name="Номер заказа")
     price = models.PositiveIntegerField(default=0, blank=True, verbose_name="Цена")
     expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Эксперт")
-    document_type = models.CharField(max_length=255, null=True, verbose_name="Тип документа")
+    document_type = models.TextField(max_length=255, null=True, verbose_name="Краткое описание проблемы")
     customer_full_name = models.CharField(max_length=250, verbose_name="Полное имя клиента")
     customer_phone = models.CharField(max_length=20, verbose_name="Номер телефона клиента")
     customer_email = models.EmailField(null=True, blank=True, verbose_name="Электронная почьта клиента")
@@ -145,7 +145,7 @@ class MeetingOrder(base_models.BaseModel):
                                         verbose_name="Цена встечи", default=0)
     language = models.CharField(max_length=3, null=True, blank=True, verbose_name='Язык')
     expert = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Эксперт")
-    short_description = models.CharField(max_length=255, null=True, blank=True, verbose_name='краткое описание')
+    short_description = models.TextField(max_length=255, null=True, blank=True, verbose_name='Краткое описание проблемы')
     meeting_status = models.IntegerField(default=0, choices=MEETING_ORDER_STATUS, verbose_name="Статус встречи")
     meeting_type = models.IntegerField(choices=MEETING_ORDER_TYPES, verbose_name="Тип встречи")
     meeting_time = models.DateTimeField(null=True, blank=True, verbose_name="Время встречи", default=timezone.now())

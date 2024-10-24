@@ -38,8 +38,8 @@ class Banner(base_models.BaseModel):
 
 
 class News(base_models.BaseModel):
-    title = models.CharField(max_length=150, verbose_name="Заголовок")
-    short_description = models.CharField(max_length=255, verbose_name="Краткое описание")
+    title = models.TextField(max_length=250, verbose_name="Заголовок")
+    short_description = models.TextField(max_length=350, verbose_name="Краткое описание")
     image = models.ImageField(upload_to='news/', verbose_name="Изображение")
     content = RichTextField(verbose_name="Содержание")
     views_count = models.IntegerField(default=0, verbose_name="Количество просмотров")
@@ -113,12 +113,12 @@ class FAQCategory(base_models.BaseModel):
 class FAQ(base_models.BaseModel):
     faq_category = models.ForeignKey(FAQCategory, on_delete=models.CASCADE,
                                      verbose_name="Категория ЧЗВ", related_name='faq_category')
-    question = models.TextField(max_length=500, verbose_name="Вопрос")
-    answer = models.TextField(max_length=1000, verbose_name="Ответ")
+    question = models.TextField(max_length=1000, verbose_name="Вопрос")
+    answer = RichTextField(verbose_name="Ответ")
     is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
 
     def __str__(self):
-        return self.question
+        return self.question[:30]
 
     class Meta:
         verbose_name = "Часто задаваемый вопрос"
@@ -229,8 +229,8 @@ class Partners(base_models.BaseModel):
 
 
 class Projects(base_models.BaseModel):
-    name = models.CharField(max_length=100, verbose_name='название проекта', null=True, blank=True)
-    short_description = models.CharField(max_length=255, verbose_name='краткое описание')
+    name = models.TextField(max_length=255, verbose_name='название проекта', null=True, blank=True)
+    short_description = models.TextField(max_length=350, verbose_name='краткое описание')
     image = models.ImageField(upload_to='project/', verbose_name='изображение')
     youtube_url = models.URLField(null=True, blank=True, verbose_name="Ютуб url")
     telegram_url = models.URLField(null=True, blank=True, verbose_name="Телеграм url")
